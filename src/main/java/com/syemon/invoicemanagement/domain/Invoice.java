@@ -1,5 +1,6 @@
 package com.syemon.invoicemanagement.domain;
 
+import lombok.Builder;
 import lombok.Getter;
 
 import java.math.BigDecimal;
@@ -9,6 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Getter
+@Builder
 public class Invoice {
     private UUID uuid;
     private DocumentType invoiceHeader;
@@ -31,6 +33,21 @@ public class Invoice {
         this.invoiceDate = invoiceDate;
         this.invoiceHeader = invoiceHeader;
         this.currency = currency;
+    }
+
+    public Invoice(UUID uuid, DocumentType invoiceHeader, OffsetDateTime invoiceDate, OffsetDateTime dueTime, Company seller, Company buyer, List<LineItem> lineItems, Money totalAmount, Money totalTaxAmount, String paymentLink, Currency currency, boolean paid) {
+        this.uuid = uuid;
+        this.invoiceHeader = invoiceHeader;
+        this.invoiceDate = invoiceDate;
+        this.dueTime = dueTime;
+        this.seller = seller;
+        this.buyer = buyer;
+        this.lineItems = lineItems;
+        this.totalAmount = totalAmount;
+        this.totalTaxAmount = totalTaxAmount;
+        this.paymentLink = paymentLink;
+        this.currency = currency;
+        this.paid = paid;
     }
 
     public Money calculateTotalAmountAndTotalTaxAmount() {

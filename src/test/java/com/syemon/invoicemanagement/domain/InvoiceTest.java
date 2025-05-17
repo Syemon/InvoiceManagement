@@ -33,16 +33,18 @@ class InvoiceTest {
     void calculateTotalAmountAndTotalTaxAmount() {
         //given
         List<LineItem> lineItems = List.of(
-                new LineItem()
-                        .setAmountPerItem(new BigDecimal("20.99"))
-                        .setQuantity(10)
-                        .setTax(new BigDecimal(21))
-                        .setDescription(PRODUCT_1_DESCRIPTION),
-                new LineItem()
-                        .setAmountPerItem(new BigDecimal("1.99"))
-                        .setQuantity(100)
-                        .setTax(new BigDecimal(7))
-                        .setDescription(PRODUCT_2_DESCRIPTION)
+                LineItem.builder()
+                        .amountPerItem(new BigDecimal("20.99"))
+                        .quantity(10)
+                        .tax(new BigDecimal(21))
+                        .description(PRODUCT_1_DESCRIPTION)
+                        .build(),
+                LineItem.builder()
+                        .amountPerItem(new BigDecimal("1.99"))
+                        .quantity(100)
+                        .tax(new BigDecimal(7))
+                        .description(PRODUCT_2_DESCRIPTION)
+                        .build()
         );
 
         Address buyerAddress = new Address(

@@ -14,11 +14,12 @@ class LineItemTest {
     @Test
     void calculateTotalAmountAndTotalTaxAmount() {
         //given
-        LineItem sut = new LineItem()
-                .setAmountPerItem(new BigDecimal("20.99"))
-                .setQuantity(10)
-                .setTax(new BigDecimal(21))
-                .setDescription(PRODUCT_DESCRIPTION);
+        LineItem sut = LineItem.builder()
+                .amountPerItem(new BigDecimal("20.99"))
+                .quantity(10)
+                .tax(new BigDecimal(21))
+                .description(PRODUCT_DESCRIPTION)
+                .build();
 
         //when
         sut.calculateTotalAmountAndTotalTaxAmount(Currency.getInstance("EUR"));
