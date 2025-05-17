@@ -69,4 +69,11 @@ public class Invoice {
         return totalAmount;
     }
 
+    public UUID generateId() {
+        if (uuid == null) {
+            uuid = UUID.randomUUID();
+        }
+        return uuid;
+    }
+
 }

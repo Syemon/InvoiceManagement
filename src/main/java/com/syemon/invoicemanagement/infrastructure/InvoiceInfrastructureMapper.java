@@ -12,9 +12,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
-public class InvoiceMapper {
+public class InvoiceInfrastructureMapper {
 
-    private final LineItemMapper lineItemMapper;
+    private final LineItemInfrastructureMapper lineItemInfrastructureMapper;
 
     public InvoiceJpaEntity toEntity(Invoice invoice) {
         if (invoice == null) {
@@ -41,7 +41,7 @@ public class InvoiceMapper {
                 .setBuyerAddressZipCode(invoice.getBuyer().address().postalCode())
                 .setBuyerAddressCountry(invoice.getBuyer().address().country())
                 .setLineItems(invoice.getLineItems().stream()
-                        .map(lineItemMapper::toEntity)
+                        .map(lineItemInfrastructureMapper::toEntity)
                         .collect(Collectors.toList()))
                 .setTotalAmount(Optional.ofNullable(invoice.getTotalAmount()).map(Money::getAmount).orElse(null))
                 .setTotalTaxAmount(Optional.ofNullable(invoice.getTotalTaxAmount()).map(Money::getAmount).orElse(null))
@@ -79,7 +79,7 @@ public class InvoiceMapper {
         );
         List<LineItem> lineItems = entity.getLineItems()
                 .stream()
-                .map(lineItemMapper::toDomain)
+                .map(lineItemInfrastructureMapper::toDomain)
                 .toList();
 
         return Invoice.builder()

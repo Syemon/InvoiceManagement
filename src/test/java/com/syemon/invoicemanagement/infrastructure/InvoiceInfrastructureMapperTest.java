@@ -16,7 +16,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class InvoiceMapperTest {
+class InvoiceInfrastructureMapperTest {
 
     private static final UUID STATIC_UUID = UUID.fromString("123e4567-e89b-12d3-a456-426614174000");
     private static final OffsetDateTime STATIC_INVOICE_DATE = OffsetDateTime.parse("2023-01-01T10:00:00Z");
@@ -50,8 +50,8 @@ class InvoiceMapperTest {
     private static final String PAYMENT_LINK = "http://payment.link";
     private static final Currency CURRENCY = Currency.getInstance("USD");
 
-    private final InvoiceMapper sut = new InvoiceMapper(
-            new LineItemMapper()
+    private final InvoiceInfrastructureMapper sut = new InvoiceInfrastructureMapper(
+            new LineItemInfrastructureMapper()
     );
 
     @Test

@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class LineItemMapperTest {
+class LineItemInfrastructureMapperTest {
 
     private static final String ITEM_DESCRIPTION = "Item 1";
     private static final BigDecimal ITEM_AMOUNT_PER_ITEM = BigDecimal.TEN;
@@ -16,7 +16,7 @@ class LineItemMapperTest {
     private static final int ITEM_QUANTITY = 2;
     private static final BigDecimal ITEM_TAX = BigDecimal.valueOf(5);
 
-    private final LineItemMapper sut = new LineItemMapper();
+    private final LineItemInfrastructureMapper sut = new LineItemInfrastructureMapper();
 
     @Test
     void toEntity() {

@@ -2,7 +2,7 @@ package com.syemon.invoicemanagement.infrastructure;
 
 import com.syemon.invoicemanagement.domain.LineItem;
 
-public class LineItemMapper {
+public class LineItemInfrastructureMapper {
 
     public LineItemJpaEntity toEntity(LineItem lineItem) {
         if (lineItem == null) {

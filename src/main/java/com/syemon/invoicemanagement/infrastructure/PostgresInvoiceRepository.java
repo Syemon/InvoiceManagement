@@ -8,12 +8,12 @@ import lombok.AllArgsConstructor;
 public class PostgresInvoiceRepository implements InvoiceRepository {
 
     private final InvoiceJpaRepository repository;
-    private final InvoiceMapper invoiceMapper;
+    private final InvoiceInfrastructureMapper invoiceInfrastructureMapper;
 
     @Override
     public Invoice save(Invoice invoice) {
-        InvoiceJpaEntity entity = invoiceMapper.toEntity(invoice);
+        InvoiceJpaEntity entity = invoiceInfrastructureMapper.toEntity(invoice);
         InvoiceJpaEntity persistedEntity = repository.save(entity);
-        return  invoiceMapper.toDomain(persistedEntity);
+        return  invoiceInfrastructureMapper.toDomain(persistedEntity);
     }
 }
