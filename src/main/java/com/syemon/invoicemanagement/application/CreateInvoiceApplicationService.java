@@ -12,8 +12,13 @@ public class CreateInvoiceApplicationService {
     private final InvoiceApplicationMapper invoiceApplicationMapper;
 
     @Transactional
-    public Invoice createInvoice(CreateInvoiceRequest createInvoiceRequest) {
+    public CreateInvoiceResponse createInvoice(CreateInvoiceRequest createInvoiceRequest) {
         InvoiceCommand invoiceCommand = invoiceApplicationMapper.toCommand(createInvoiceRequest);
-        return createInvoiceService.createInvoice(invoiceCommand);
+        Invoice invoice = createInvoiceService.createInvoice(invoiceCommand);
+
+        CreateInvoiceResponse response = new CreateInvoiceResponse();
+        response.setStatus(200);
+        response.setData(invoice);
+        return response;
     }
 }
