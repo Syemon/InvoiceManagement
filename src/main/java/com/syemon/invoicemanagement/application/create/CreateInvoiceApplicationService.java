@@ -3,7 +3,6 @@ package com.syemon.invoicemanagement.application.create;
 import com.syemon.invoicemanagement.application.mapper.InvoiceApplicationMapper;
 import com.syemon.invoicemanagement.domain.service.CreateInvoiceService;
 import com.syemon.invoicemanagement.domain.Invoice;
-import com.syemon.invoicemanagement.domain.InvoiceCommand;
 import lombok.AllArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,12 +13,12 @@ public class CreateInvoiceApplicationService {
 
     @Transactional
     public CreateInvoiceResponse createInvoice(CreateInvoiceRequest createInvoiceRequest) {
-        InvoiceCommand invoiceCommand = invoiceApplicationMapper.toCommand(createInvoiceRequest);
-        Invoice invoice = createInvoiceService.createInvoice(invoiceCommand);
+        Invoice invoice = invoiceApplicationMapper.toDomain(createInvoiceRequest);
+        Invoice persistedInvoice = createInvoiceService.save(invoice);
 
         CreateInvoiceResponse response = new CreateInvoiceResponse();
         response.setStatus(200);
-        response.setData(invoice);
+        response.setData(persistedInvoice);
         return response;
     }
 }

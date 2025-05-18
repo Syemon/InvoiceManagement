@@ -48,12 +48,10 @@ public class ApplicationConfiguration {
 
     @Bean
     public CreateInvoiceService createInvoiceService(
-            PostgresInvoiceRepository postgresInvoiceRepository,
-            InvoiceMapper invoiceMapper
+            PostgresInvoiceRepository postgresInvoiceRepository
     ) {
         return new CreateInvoiceService(
-                postgresInvoiceRepository,
-                invoiceMapper
+                postgresInvoiceRepository
         );
     }
 

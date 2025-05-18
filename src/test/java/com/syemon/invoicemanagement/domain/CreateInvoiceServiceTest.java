@@ -1,7 +1,5 @@
 package com.syemon.invoicemanagement.domain;
 
-import com.syemon.invoicemanagement.domain.mapper.InvoiceMapper;
-import com.syemon.invoicemanagement.domain.mapper.LineItemMapper;
 import com.syemon.invoicemanagement.domain.service.CreateInvoiceService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -47,22 +45,18 @@ class CreateInvoiceServiceTest {
     @InjectMocks
     private CreateInvoiceService sut;
 
-    private InvoiceMapper invoiceMapper;
-
     @Mock
     private InvoiceRepository invoiceRepository;
 
     @BeforeEach
     public void setUp() {
-        invoiceMapper = Mockito.spy(new InvoiceMapper(new LineItemMapper()));
         sut = new CreateInvoiceService(
-                invoiceRepository,
-                invoiceMapper
+                invoiceRepository
         );
     }
 
     @Test
-    void createInvoice() {
+    void save() {
         //given
         OffsetDateTime invoiceDate = OffsetDateTime.now();
         OffsetDateTime dueTime = invoiceDate.plusMonths(1);
@@ -95,42 +89,42 @@ class CreateInvoiceServiceTest {
                 sellerAddress
         );
 
-        List<LineItemCommand> lineItemsCommand = List.of(
-            new LineItemCommand(
-                    PRODUCT_DESCRIPTION,
-                    AMOUNT_PER_ITEM,
-                    QUANTITY,
-                    TAX
-            )
+        List<LineItem> lineItems = List.of(
+                LineItem.builder()
+                        .description(PRODUCT_DESCRIPTION)
+                        .amountPerItem(AMOUNT_PER_ITEM)
+                        .quantity(QUANTITY)
+                        .tax(TAX)
+                        .build()
         );
 
-        InvoiceCommand invoiceCommand = new InvoiceCommand(
-                INVOICE_HEADER,
-                invoiceDate,
-                dueTime,
-                seller,
-                buyer,
-                lineItemsCommand,
-                EUR_CURRENCY
-        );
+        Invoice invoice = Invoice.builder()
+                .invoiceHeader(INVOICE_HEADER)
+                .invoiceDate(invoiceDate)
+                .dueTime(dueTime)
+                .seller(seller)
+                .buyer(buyer)
+                .lineItems(lineItems)
+                .currency(EUR_CURRENCY)
+                .build();
 
         when(invoiceRepository.save(Mockito.any())).thenAnswer(invocation -> invocation.getArgument(0));
 
         //when
-        Invoice invoice = sut.createInvoice(invoiceCommand);
+        Invoice actual = sut.save(invoice);
 
         //then
-        assertThat(invoice.getUuid()).isNotNull();
-        assertThat(invoice.getInvoiceHeader()).isEqualTo(INVOICE_HEADER);
-        assertThat(invoice.getInvoiceDate()).isEqualTo(invoiceDate);
-        assertThat(invoice.getDueTime()).isEqualTo(dueTime);
-        assertThat(invoice.getSeller()).isNotNull();
-        assertThat(invoice.getBuyer()).isNotNull();
-        assertThat(invoice.getPaymentLink()).isNull();
-        assertThat(invoice.isPaid()).isFalse();
-        assertThat(invoice.getCurrency()).isEqualTo(EUR_CURRENCY);
+        assertThat(actual.getUuid()).isNotNull();
+        assertThat(actual.getInvoiceHeader()).isEqualTo(INVOICE_HEADER);
+        assertThat(actual.getInvoiceDate()).isEqualTo(invoiceDate);
+        assertThat(actual.getDueTime()).isEqualTo(dueTime);
+        assertThat(actual.getSeller()).isNotNull();
+        assertThat(actual.getBuyer()).isNotNull();
+        assertThat(actual.getPaymentLink()).isNull();
+        assertThat(actual.isPaid()).isFalse();
+        assertThat(actual.getCurrency()).isEqualTo(EUR_CURRENCY);
 
-        Company actualSeller = invoice.getSeller();
+        Company actualSeller = actual.getSeller();
         assertThat(actualSeller.email()).isEqualTo(SELLER_EMAIL);
         assertThat(actualSeller.name()).isEqualTo(SELLER_COMPANY_NAME);
         assertThat(actualSeller.phoneNumber()).isEqualTo(SELLER_PHONE_NUMBER);
@@ -142,7 +136,7 @@ class CreateInvoiceServiceTest {
         assertThat(actualSellerAddress.postalCode()).isEqualTo(SELLER_POSTAL_CODE);
         assertThat(actualSellerAddress.street()).isEqualTo(SELLER_STREET);
 
-        Company actualBuyer = invoice.getBuyer();
+        Company actualBuyer = actual.getBuyer();
         assertThat(actualBuyer.email()).isEqualTo(BUYER_EMAIL);
         assertThat(actualBuyer.name()).isEqualTo(BUYER_COMPANY_NAME);
         assertThat(actualBuyer.phoneNumber()).isEqualTo(BUYER_PHONE_NUMBER);
