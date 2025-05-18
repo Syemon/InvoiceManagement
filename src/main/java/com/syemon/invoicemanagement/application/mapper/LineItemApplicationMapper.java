@@ -1,5 +1,6 @@
-package com.syemon.invoicemanagement.application;
+package com.syemon.invoicemanagement.application.mapper;
 
+import com.syemon.invoicemanagement.application.create.CreateLineItemRequest;
 import com.syemon.invoicemanagement.domain.LineItemCommand;
 
 public class LineItemApplicationMapper {

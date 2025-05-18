@@ -1,4 +1,7 @@
-package com.syemon.invoicemanagement.domain;
+package com.syemon.invoicemanagement.domain.mapper;
+
+import com.syemon.invoicemanagement.domain.LineItem;
+import com.syemon.invoicemanagement.domain.LineItemCommand;
 
 public class LineItemMapper {
     public LineItem toDomain(LineItemCommand command) {

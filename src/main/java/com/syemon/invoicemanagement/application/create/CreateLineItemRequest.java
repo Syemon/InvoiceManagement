@@ -1,4 +1,4 @@
-package com.syemon.invoicemanagement.application;
+package com.syemon.invoicemanagement.application.create;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

@@ -1,11 +1,11 @@
 package com.syemon.invoicemanagement.configuration;
 
-import com.syemon.invoicemanagement.application.CreateInvoiceApplicationService;
-import com.syemon.invoicemanagement.application.InvoiceApplicationMapper;
-import com.syemon.invoicemanagement.application.LineItemApplicationMapper;
-import com.syemon.invoicemanagement.domain.CreateInvoiceService;
-import com.syemon.invoicemanagement.domain.InvoiceMapper;
-import com.syemon.invoicemanagement.domain.LineItemMapper;
+import com.syemon.invoicemanagement.application.create.CreateInvoiceApplicationService;
+import com.syemon.invoicemanagement.application.mapper.InvoiceApplicationMapper;
+import com.syemon.invoicemanagement.application.mapper.LineItemApplicationMapper;
+import com.syemon.invoicemanagement.domain.service.CreateInvoiceService;
+import com.syemon.invoicemanagement.domain.mapper.InvoiceMapper;
+import com.syemon.invoicemanagement.domain.mapper.LineItemMapper;
 import com.syemon.invoicemanagement.infrastructure.InvoiceInfrastructureMapper;
 import com.syemon.invoicemanagement.infrastructure.InvoiceJpaRepository;
 import com.syemon.invoicemanagement.infrastructure.LineItemInfrastructureMapper;

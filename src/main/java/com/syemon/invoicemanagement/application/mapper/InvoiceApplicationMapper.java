@@ -1,11 +1,8 @@
-package com.syemon.invoicemanagement.application;
+package com.syemon.invoicemanagement.application.mapper;
 
-import com.syemon.invoicemanagement.domain.Company;
-import com.syemon.invoicemanagement.domain.Invoice;
+import com.syemon.invoicemanagement.application.create.CreateInvoiceRequest;
 import com.syemon.invoicemanagement.domain.InvoiceCommand;
-import com.syemon.invoicemanagement.domain.LineItem;
 import com.syemon.invoicemanagement.domain.LineItemCommand;
-import com.syemon.invoicemanagement.domain.LineItemMapper;
 import lombok.AllArgsConstructor;
 
 import java.util.List;

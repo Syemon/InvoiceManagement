@@ -1,5 +1,9 @@
-package com.syemon.invoicemanagement.domain;
+package com.syemon.invoicemanagement.domain.mapper;
 
+import com.syemon.invoicemanagement.domain.Company;
+import com.syemon.invoicemanagement.domain.Invoice;
+import com.syemon.invoicemanagement.domain.InvoiceCommand;
+import com.syemon.invoicemanagement.domain.LineItem;
 import lombok.AllArgsConstructor;
 
 import java.util.List;

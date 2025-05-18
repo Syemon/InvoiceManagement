@@ -29,6 +29,7 @@ public class Invoice {
     private String paymentLink;
     private Currency currency;
     private boolean paid = false;
+//    private User systemUser;
 
     public Invoice() {
     }

@@ -2,12 +2,17 @@ package com.syemon.invoicemanagement.application;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.syemon.invoicemanagement.TestcontainersConfiguration;
+import com.syemon.invoicemanagement.application.authorization.UserApplicationService;
+import com.syemon.invoicemanagement.application.create.CreateInvoiceRequest;
+import com.syemon.invoicemanagement.application.create.CreateInvoiceResponse;
+import com.syemon.invoicemanagement.application.create.CreateLineItemRequest;
 import com.syemon.invoicemanagement.domain.Address;
 import com.syemon.invoicemanagement.domain.Company;
 import com.syemon.invoicemanagement.domain.DocumentType;
 import com.syemon.invoicemanagement.domain.Invoice;
 import com.syemon.invoicemanagement.domain.InvoiceRepository;
 import com.syemon.invoicemanagement.domain.LineItem;
+import com.syemon.invoicemanagement.infrastructure.UserJpaEntity;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -32,6 +37,7 @@ import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -69,10 +75,20 @@ class InvoiceRestControllerTest {
     private MockMvc mockMvc;
     @Autowired
     private InvoiceRepository invoiceRepository;
+    @Autowired
+    private UserApplicationService userApplicationService;
 
     @Test
     void create_shouldReturn400_whenNotValid() throws Exception {
         //given
+        String username = "username";
+        String password = "username";
+        UserJpaEntity userJpaEntity = new UserJpaEntity()
+                .setUsername(username)
+                        .setLogin(username)
+                                .setPassword(password);
+        userApplicationService.createUser(userJpaEntity);
+
         String body = objectMapper.writeValueAsString(
                 new CreateInvoiceRequest(null, null, null, null, null, null, null)
         );
@@ -92,6 +108,7 @@ class InvoiceRestControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body)
                         .with(csrf())
+                        .with(httpBasic(username, password))
         );
 
         //then
@@ -137,6 +154,7 @@ class InvoiceRestControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body)
                         .with(csrf())
+                        .with(httpBasic("admin", "admin123"))
         );
 
         //then
@@ -198,6 +216,8 @@ class InvoiceRestControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body)
                         .with(csrf())
+                        .with(httpBasic("admin", "admin123"))
+
         );
 
         //then
@@ -251,6 +271,7 @@ class InvoiceRestControllerTest {
     @Test
     void create_shouldPersistInvoice() throws Exception {
         //given
+
         OffsetDateTime invoiceDate = OffsetDateTime.now();
         OffsetDateTime dueTime = invoiceDate.plusMonths(1);
 
@@ -301,7 +322,21 @@ class InvoiceRestControllerTest {
                 EUR_CURRENCY
         );
 
+
+
+
+
+        String username = "username3";
+        String password = "username3";
+        UserJpaEntity userJpaEntity = new UserJpaEntity()
+                .setUsername(username)
+                .setLogin(username)
+                .setPassword(password);
+        userApplicationService.createUser(userJpaEntity);
+
+
         String body = objectMapper.writeValueAsString(request);
+
 
         //when
         ResultActions resultActions = mockMvc.perform(
@@ -309,6 +344,7 @@ class InvoiceRestControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body)
                         .with(csrf())
+                        .with(httpBasic(username, password))
         );
 
         //then

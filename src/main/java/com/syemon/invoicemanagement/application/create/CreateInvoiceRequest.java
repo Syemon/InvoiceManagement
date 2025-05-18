@@ -1,4 +1,4 @@
-package com.syemon.invoicemanagement.application;
+package com.syemon.invoicemanagement.application.create;
 
 import com.syemon.invoicemanagement.domain.Company;
 import com.syemon.invoicemanagement.domain.DocumentType;
