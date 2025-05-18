@@ -4,8 +4,6 @@ import com.syemon.invoicemanagement.application.create.CreateInvoiceApplicationS
 import com.syemon.invoicemanagement.application.mapper.InvoiceApplicationMapper;
 import com.syemon.invoicemanagement.application.mapper.LineItemApplicationMapper;
 import com.syemon.invoicemanagement.domain.service.CreateInvoiceService;
-import com.syemon.invoicemanagement.domain.mapper.InvoiceMapper;
-import com.syemon.invoicemanagement.domain.mapper.LineItemMapper;
 import com.syemon.invoicemanagement.infrastructure.InvoiceInfrastructureMapper;
 import com.syemon.invoicemanagement.infrastructure.InvoiceJpaRepository;
 import com.syemon.invoicemanagement.infrastructure.LineItemInfrastructureMapper;
@@ -34,16 +32,6 @@ public class ApplicationConfiguration {
     @Bean
     public LineItemApplicationMapper lineItemApplicationMapper() {
         return new LineItemApplicationMapper();
-    }
-
-    @Bean
-    public InvoiceMapper invoiceMapper(LineItemMapper lineItemMapper) {
-        return new InvoiceMapper(lineItemMapper);
-    }
-
-    @Bean
-    public LineItemMapper lineItemMapper() {
-        return new LineItemMapper();
     }
 
     @Bean

@@ -10,7 +10,7 @@ import com.syemon.invoicemanagement.domain.Address;
 import com.syemon.invoicemanagement.domain.Company;
 import com.syemon.invoicemanagement.domain.DocumentType;
 import com.syemon.invoicemanagement.domain.Invoice;
-import com.syemon.invoicemanagement.domain.InvoiceRepository;
+import com.syemon.invoicemanagement.domain.repository.InvoiceRepository;
 import com.syemon.invoicemanagement.domain.LineItem;
 import com.syemon.invoicemanagement.infrastructure.OwnerJpaEntity;
 import org.junit.jupiter.api.Test;

@@ -1,7 +1,7 @@
 package com.syemon.invoicemanagement.infrastructure;
 
 import com.syemon.invoicemanagement.domain.Invoice;
-import com.syemon.invoicemanagement.domain.InvoiceRepository;
+import com.syemon.invoicemanagement.domain.repository.InvoiceRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 

@@ -1,5 +1,6 @@
 package com.syemon.invoicemanagement.domain;
 
+import com.syemon.invoicemanagement.domain.repository.InvoiceRepository;
 import com.syemon.invoicemanagement.domain.service.CreateInvoiceService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -1,7 +1,7 @@
 package com.syemon.invoicemanagement.infrastructure;
 
 import com.syemon.invoicemanagement.domain.LineItem;
-import com.syemon.invoicemanagement.domain.LineItemRepository;
+import com.syemon.invoicemanagement.domain.repository.LineItemRepository;
 import lombok.AllArgsConstructor;
 
 import java.util.List;

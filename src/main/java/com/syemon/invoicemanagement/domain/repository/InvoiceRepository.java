@@ -1,4 +1,6 @@
-package com.syemon.invoicemanagement.domain;
+package com.syemon.invoicemanagement.domain.repository;
+
+import com.syemon.invoicemanagement.domain.Invoice;
 
 import java.util.Optional;
 import java.util.UUID;
