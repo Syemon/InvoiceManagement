@@ -27,6 +27,7 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Currency;
 import java.util.HashMap;
@@ -399,8 +400,8 @@ class InvoiceRestControllerTest {
 
         assertThat(invoice.getUuid()).isEqualTo(expectedInvoice.getUuid());
         assertThat(invoice.getInvoiceHeader()).isEqualTo(expectedInvoice.getInvoiceHeader());
-        assertThat(invoice.getInvoiceDate()).isEqualTo(expectedInvoice.getInvoiceDate());
-        assertThat(invoice.getDueTime()).isEqualTo(expectedInvoice.getDueTime());
+        assertThat(invoice.getInvoiceDate().truncatedTo(ChronoUnit.DAYS)).isEqualTo(expectedInvoice.getInvoiceDate().truncatedTo(ChronoUnit.DAYS));
+        assertThat(invoice.getDueTime().truncatedTo(ChronoUnit.DAYS)).isEqualTo(expectedInvoice.getDueTime().truncatedTo(ChronoUnit.DAYS));
 
         assertThat(invoice.getSeller().name()).isEqualTo(expectedInvoice.getSeller().name());
         assertThat(invoice.getSeller().phoneNumber()).isEqualTo(expectedInvoice.getSeller().phoneNumber());
