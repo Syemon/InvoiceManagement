@@ -1,6 +1,6 @@
 package com.syemon.invoicemanagement.application.create;
 
-import com.syemon.invoicemanagement.domain.Company;
+import com.syemon.invoicemanagement.application.CompanyModel;
 import com.syemon.invoicemanagement.domain.DocumentType;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -14,9 +14,9 @@ public record CreateInvoiceRequest(
     @NotNull DocumentType invoiceHeader,
     @NotNull OffsetDateTime invoiceDate,
     @NotNull OffsetDateTime dueTime,
-    @Valid @NotNull Company seller,
-    @Valid @NotNull Company buyer,
-    @Valid @NotNull @Size(min = 1, max = 1000) List<CreateLineItemRequest> lineItems,
+    @Valid @NotNull CompanyModel seller,
+    @Valid @NotNull CompanyModel buyer,
+    @Valid @NotNull @Size(min = 1, max = 1000) List<LineItemModel> lineItems,
     @NotNull Currency currency
 ){
 

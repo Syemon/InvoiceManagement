@@ -7,7 +7,7 @@ import org.hibernate.validator.constraints.Range;
 
 import java.math.BigDecimal;
 
-public record CreateLineItemRequest(
+public record LineItemModel(
         @NotBlank @Length(max = 999) String description,
         @NotNull @Range(min = 1, max = 9999999) BigDecimal amountPerItem,
         @NotNull @Range(min = 1, max = 9999) Integer quantity,

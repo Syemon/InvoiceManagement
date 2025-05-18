@@ -1,4 +1,4 @@
-package com.syemon.invoicemanagement.application.authorization;
+package com.syemon.invoicemanagement.application.security;
 
 import com.syemon.invoicemanagement.infrastructure.OwnerPostgresRepository;
 import lombok.AllArgsConstructor;

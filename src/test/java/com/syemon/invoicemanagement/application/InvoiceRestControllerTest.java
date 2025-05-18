@@ -2,10 +2,10 @@ package com.syemon.invoicemanagement.application;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.syemon.invoicemanagement.TestcontainersConfiguration;
-import com.syemon.invoicemanagement.application.authorization.UserApplicationService;
+import com.syemon.invoicemanagement.application.security.UserApplicationService;
 import com.syemon.invoicemanagement.application.create.CreateInvoiceRequest;
 import com.syemon.invoicemanagement.application.create.CreateInvoiceResponse;
-import com.syemon.invoicemanagement.application.create.CreateLineItemRequest;
+import com.syemon.invoicemanagement.application.create.LineItemModel;
 import com.syemon.invoicemanagement.domain.Address;
 import com.syemon.invoicemanagement.domain.Company;
 import com.syemon.invoicemanagement.domain.DocumentType;
@@ -125,7 +125,7 @@ class InvoiceRestControllerTest {
     @Test
     void create_shouldReturn400_whenNotValidNestedObjects() throws Exception {
         //given
-        Company emptyCompany = new Company(null, null, null, null);
+        CompanyModel emptyCompany = new CompanyModel(null, null, null, null);
 
         String body = objectMapper.writeValueAsString(
                 new CreateInvoiceRequest(
@@ -178,14 +178,14 @@ class InvoiceRestControllerTest {
             Map<String, String> expectedErrors
     ) throws Exception {
         //given
-        Address buyerAddress = new Address(
+        AddressModel buyerAddress = new AddressModel(
                 BUYER_STREET,
                 BUYER_CITY,
                 BUYER_POSTAL_CODE,
                 BUYER_COUNTRY
         );
 
-        Company buyer = new Company(
+        CompanyModel buyer = new CompanyModel(
                 BUYER_COMPANY_NAME,
                 BUYER_PHONE_NUMBER,
                 BUYER_EMAIL,
@@ -200,7 +200,7 @@ class InvoiceRestControllerTest {
                         buyer,
                         buyer,
                         List.of(
-                            new CreateLineItemRequest(
+                            new LineItemModel(
                                     description,
                                     amountPerItem,
                                     quantity,
@@ -275,36 +275,36 @@ class InvoiceRestControllerTest {
         OffsetDateTime invoiceDate = OffsetDateTime.now();
         OffsetDateTime dueTime = invoiceDate.plusMonths(1);
 
-        Address buyerAddress = new Address(
+        AddressModel buyerAddress = new AddressModel(
                 BUYER_STREET,
                 BUYER_CITY,
                 BUYER_POSTAL_CODE,
                 BUYER_COUNTRY
         );
 
-        Company buyer = new Company(
+        CompanyModel buyer = new CompanyModel(
                 BUYER_COMPANY_NAME,
                 BUYER_PHONE_NUMBER,
                 BUYER_EMAIL,
                 buyerAddress
         );
 
-        Address sellerAddress = new Address(
+        AddressModel sellerAddress = new AddressModel(
                 SELLER_STREET,
                 SELLER_CITY,
                 SELLER_POSTAL_CODE,
                 SELLER_COUNTRY
         );
 
-        Company seller = new Company(
+        CompanyModel seller = new CompanyModel(
                 SELLER_COMPANY_NAME,
                 SELLER_PHONE_NUMBER,
                 SELLER_EMAIL,
                 sellerAddress
         );
 
-        List<CreateLineItemRequest> lineItemsCommand = List.of(
-                new CreateLineItemRequest(
+        List<LineItemModel> lineItemsCommand = List.of(
+                new LineItemModel(
                         PRODUCT_DESCRIPTION,
                         AMOUNT_PER_ITEM,
                         QUANTITY,
