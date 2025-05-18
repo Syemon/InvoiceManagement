@@ -4,6 +4,7 @@ import com.syemon.invoicemanagement.application.AddressModel;
 import com.syemon.invoicemanagement.application.CompanyModel;
 import com.syemon.invoicemanagement.application.InvoiceModel;
 import com.syemon.invoicemanagement.application.create.CreateInvoiceRequest;
+import com.syemon.invoicemanagement.application.create.LineItemModel;
 import com.syemon.invoicemanagement.domain.Address;
 import com.syemon.invoicemanagement.domain.Company;
 import com.syemon.invoicemanagement.domain.Invoice;
@@ -16,24 +17,24 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class InvoiceApplicationMapper {
 
-    private final LineItemApplicationMapper lineItemMapper;
+//    private final LineItemApplicationMapper lineItemMapper;
 
-    public Invoice toDomain(CreateInvoiceRequest command) {
-        Company seller = toDomain(command.seller());
-        Company buyer = toDomain(command.buyer());
+    public Invoice toDomain(CreateInvoiceRequest request) {
+        Company seller = toDomain(request.seller());
+        Company buyer = toDomain(request.buyer());
 
-        List<LineItem> lineItems = command.lineItems().stream()
-                .map(lineItemMapper::toDomain)
+        List<LineItem> lineItems = request.lineItems().stream()
+                .map(this::toLineItemDomain)
                 .collect(Collectors.toList());
 
         return Invoice.builder()
-                .invoiceHeader(command.invoiceHeader())
-                .invoiceDate(command.invoiceDate())
-                .dueTime(command.dueTime())
+                .invoiceHeader(request.invoiceHeader())
+                .invoiceDate(request.invoiceDate())
+                .dueTime(request.dueTime())
                 .seller(seller)
                 .buyer(buyer)
                 .lineItems(lineItems)
-                .currency(command.currency())
+                .currency(request.currency())
                 .build();
 
     }
@@ -52,6 +53,15 @@ public class InvoiceApplicationMapper {
                 .paymentLink(invoice.getPaymentLink())
                 .currency(invoice.getCurrency())
                 .paid(invoice.isPaid())
+                .build();
+    }
+
+    public LineItem toLineItemDomain(LineItemModel command) {
+        return LineItem.builder()
+                .description(command.description())
+                .amountPerItem(command.amountPerItem())
+                .quantity(command.quantity())
+                .tax(command.tax())
                 .build();
     }
 

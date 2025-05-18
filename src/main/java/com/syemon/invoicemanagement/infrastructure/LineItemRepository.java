@@ -1,4 +1,4 @@
-package com.syemon.invoicemanagement.domain.repository;
+package com.syemon.invoicemanagement.infrastructure;
 
 import com.syemon.invoicemanagement.domain.LineItem;
 

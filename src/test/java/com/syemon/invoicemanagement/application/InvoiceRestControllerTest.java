@@ -10,9 +10,10 @@ import com.syemon.invoicemanagement.domain.Address;
 import com.syemon.invoicemanagement.domain.Company;
 import com.syemon.invoicemanagement.domain.DocumentType;
 import com.syemon.invoicemanagement.domain.Invoice;
-import com.syemon.invoicemanagement.domain.repository.InvoiceRepository;
+import com.syemon.invoicemanagement.infrastructure.InvoiceRepository;
 import com.syemon.invoicemanagement.domain.LineItem;
 import com.syemon.invoicemanagement.infrastructure.OwnerJpaEntity;
+import com.syemon.invoicemanagement.infrastructure.PostgresInvoiceRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -21,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -75,7 +77,7 @@ class InvoiceRestControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @Autowired
-    private InvoiceRepository invoiceRepository;
+    private PostgresInvoiceRepository invoiceRepository;
     @Autowired
     private UserApplicationService userApplicationService;
 
@@ -353,7 +355,7 @@ class InvoiceRestControllerTest {
 
         CreateInvoiceResponse response = objectMapper.readValue(rawBody, CreateInvoiceResponse.class);
         assertThat(response.getInvalidFields()).isNullOrEmpty();
-        assertThat(response.getStatus()).isEqualTo(200);
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.ACCEPTED.value());
         assertThat(response.getData()).isNotNull();
 
         InvoiceModel invoiceModel = response.getData();

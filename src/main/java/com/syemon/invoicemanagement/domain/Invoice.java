@@ -29,7 +29,7 @@ public class Invoice {
     private String paymentLink;
     private Currency currency;
     private boolean paid = false;
-//    private User systemUser;
+    private Owner owner;
 
     public Invoice() {
     }
@@ -44,7 +44,7 @@ public class Invoice {
         this.currency = currency;
     }
 
-    public Invoice(UUID uuid, DocumentType invoiceHeader, OffsetDateTime invoiceDate, OffsetDateTime dueTime, Company seller, Company buyer, List<LineItem> lineItems, Money totalAmount, Money totalTaxAmount, String paymentLink, Currency currency, boolean paid) {
+    public Invoice(UUID uuid, DocumentType invoiceHeader, OffsetDateTime invoiceDate, OffsetDateTime dueTime, Company seller, Company buyer, List<LineItem> lineItems, Money totalAmount, Money totalTaxAmount, String paymentLink, Currency currency, boolean paid, Owner owner) {
         this.uuid = uuid;
         this.invoiceHeader = invoiceHeader;
         this.invoiceDate = invoiceDate;
@@ -57,6 +57,7 @@ public class Invoice {
         this.paymentLink = paymentLink;
         this.currency = currency;
         this.paid = paid;
+        this.owner = owner;
     }
 
     public Money calculateTotalAmountAndTotalTaxAmount() {

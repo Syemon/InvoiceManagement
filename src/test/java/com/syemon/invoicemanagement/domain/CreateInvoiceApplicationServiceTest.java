@@ -1,25 +1,40 @@
 package com.syemon.invoicemanagement.domain;
 
-import com.syemon.invoicemanagement.domain.repository.InvoiceRepository;
-import com.syemon.invoicemanagement.domain.service.CreateInvoiceService;
+import com.syemon.invoicemanagement.application.AddressModel;
+import com.syemon.invoicemanagement.application.CompanyModel;
+import com.syemon.invoicemanagement.application.InvoiceModel;
+import com.syemon.invoicemanagement.application.create.CreateInvoiceApplicationService;
+import com.syemon.invoicemanagement.application.create.CreateInvoiceRequest;
+import com.syemon.invoicemanagement.application.create.CreateInvoiceResponse;
+import com.syemon.invoicemanagement.application.create.LineItemModel;
+import com.syemon.invoicemanagement.application.mapper.InvoiceApplicationMapper;
+import com.syemon.invoicemanagement.application.mapper.LineItemApplicationMapper;
+import com.syemon.invoicemanagement.infrastructure.InvoiceInfrastructureMapper;
+import com.syemon.invoicemanagement.infrastructure.InvoiceRepository;
+import com.syemon.invoicemanagement.infrastructure.LineItemInfrastructureMapper;
+import com.syemon.invoicemanagement.infrastructure.OwnerJpaEntity;
+import com.syemon.invoicemanagement.infrastructure.OwnerPostgresRepository;
+import com.syemon.invoicemanagement.infrastructure.PostgresInvoiceRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.Currency;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class CreateInvoiceServiceTest {
+class CreateInvoiceApplicationServiceTest {
 
     private static final String PRODUCT_DESCRIPTION = "Product 1";
     private static final String BUYER_STREET = "street 1/2";
@@ -42,79 +57,94 @@ class CreateInvoiceServiceTest {
     private static final BigDecimal AMOUNT_PER_ITEM = new BigDecimal("33.99");
     private static final int QUANTITY = 14;
     private static final BigDecimal TAX = new BigDecimal("17");
+    public static final String OWNER_USERNAME = "name";
 
-    @InjectMocks
-    private CreateInvoiceService sut;
+    //    @InjectMocks
+    private CreateInvoiceApplicationService sut;
 
     @Mock
-    private InvoiceRepository invoiceRepository;
+    private PostgresInvoiceRepository invoiceRepository;
+    @Spy
+    private InvoiceApplicationMapper invoiceApplicationMapper;
+    @Mock
+    private OwnerPostgresRepository ownerPostgresRepository;
+    private InvoiceInfrastructureMapper invoiceInfrastructureMapper;
 
     @BeforeEach
     public void setUp() {
-        sut = new CreateInvoiceService(
-                invoiceRepository
+        invoiceInfrastructureMapper = new InvoiceInfrastructureMapper(
+                new LineItemInfrastructureMapper()
+        );
+        sut = new CreateInvoiceApplicationService(
+                invoiceRepository,
+                invoiceApplicationMapper,
+                ownerPostgresRepository,
+                invoiceInfrastructureMapper
         );
     }
 
     @Test
-    void save() {
+    void createInvoice() {
         //given
         OffsetDateTime invoiceDate = OffsetDateTime.now();
         OffsetDateTime dueTime = invoiceDate.plusMonths(1);
 
-        Address buyerAddress = new Address(
+        AddressModel buyerAddress = new AddressModel(
                 BUYER_STREET,
                 BUYER_CITY,
                 BUYER_POSTAL_CODE,
                 BUYER_COUNTRY
         );
 
-        Company buyer = new Company(
+        CompanyModel buyer = new CompanyModel(
                 BUYER_COMPANY_NAME,
                 BUYER_PHONE_NUMBER,
                 BUYER_EMAIL,
                 buyerAddress
         );
 
-        Address sellerAddress = new Address(
+        AddressModel sellerAddress = new AddressModel(
                 SELLER_STREET,
                 SELLER_CITY,
                 SELLER_POSTAL_CODE,
                 SELLER_COUNTRY
         );
 
-        Company seller = new Company(
+        CompanyModel seller = new CompanyModel(
                 SELLER_COMPANY_NAME,
                 SELLER_PHONE_NUMBER,
                 SELLER_EMAIL,
                 sellerAddress
         );
 
-        List<LineItem> lineItems = List.of(
-                LineItem.builder()
-                        .description(PRODUCT_DESCRIPTION)
-                        .amountPerItem(AMOUNT_PER_ITEM)
-                        .quantity(QUANTITY)
-                        .tax(TAX)
-                        .build()
+        List<LineItemModel> lineItems = List.of(
+                new LineItemModel(
+                        PRODUCT_DESCRIPTION,
+                        AMOUNT_PER_ITEM,
+                        QUANTITY,
+                        TAX));
+
+        CreateInvoiceRequest request = new CreateInvoiceRequest(
+                INVOICE_HEADER,
+                invoiceDate,
+                dueTime,
+                seller,
+                buyer,
+                lineItems,
+                EUR_CURRENCY
         );
+        Owner owner = new Owner(OWNER_USERNAME, "encryptedPassword");
 
-        Invoice invoice = Invoice.builder()
-                .invoiceHeader(INVOICE_HEADER)
-                .invoiceDate(invoiceDate)
-                .dueTime(dueTime)
-                .seller(seller)
-                .buyer(buyer)
-                .lineItems(lineItems)
-                .currency(EUR_CURRENCY)
-                .build();
-
-        when(invoiceRepository.save(Mockito.any())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(invoiceRepository.save(Mockito.any())).thenAnswer(invocation -> invoiceInfrastructureMapper.toDomain(invocation.getArgument(0)));
+        OwnerJpaEntity ownerJpaEntity = new OwnerJpaEntity().setUsername(OWNER_USERNAME);
+        when(ownerPostgresRepository.findByUsername(owner.getUsername())).thenReturn(Optional.of(ownerJpaEntity));
 
         //when
-        Invoice actual = sut.save(invoice);
+        CreateInvoiceResponse response = sut.createInvoice(request, owner);
 
         //then
+        assertThat(response.getData()).isNotNull();
+        InvoiceModel actual = response.getData();
         assertThat(actual.getUuid()).isNotNull();
         assertThat(actual.getInvoiceHeader()).isEqualTo(INVOICE_HEADER);
         assertThat(actual.getInvoiceDate()).isEqualTo(invoiceDate);

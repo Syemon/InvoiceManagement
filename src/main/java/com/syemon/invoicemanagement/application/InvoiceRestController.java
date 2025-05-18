@@ -3,6 +3,7 @@ package com.syemon.invoicemanagement.application;
 import com.syemon.invoicemanagement.application.create.CreateInvoiceApplicationService;
 import com.syemon.invoicemanagement.application.create.CreateInvoiceRequest;
 import com.syemon.invoicemanagement.application.create.CreateInvoiceResponse;
+import com.syemon.invoicemanagement.domain.Owner;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -22,7 +23,10 @@ public class InvoiceRestController {
     public ResponseEntity<CreateInvoiceResponse> create(
             @RequestBody @Validated CreateInvoiceRequest createInvoiceRequest,
             @AuthenticationPrincipal UserDetails userDetails) {
-        CreateInvoiceResponse response = createInvoiceService.createInvoice(createInvoiceRequest);
+        CreateInvoiceResponse response = createInvoiceService.createInvoice(
+                createInvoiceRequest,
+                new Owner(userDetails.getUsername(), userDetails.getPassword())
+        );
         return ResponseEntity.ok(response);
     }
 }
