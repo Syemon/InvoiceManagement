@@ -7,7 +7,7 @@ import com.syemon.invoicemanagement.domain.Company;
 import com.syemon.invoicemanagement.domain.DocumentType;
 import com.syemon.invoicemanagement.domain.Invoice;
 import com.syemon.invoicemanagement.domain.InvoiceRepository;
-import com.syemon.invoicemanagement.infrastructure.InvoiceJpaEntity;
+import com.syemon.invoicemanagement.domain.LineItem;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -331,6 +331,7 @@ class InvoiceRestControllerTest {
         assertThat(invoice.getPaymentLink()).isNull();
         assertThat(invoice.isPaid()).isFalse();
         assertThat(invoice.getCurrency()).isEqualTo(EUR_CURRENCY);
+        assertThat(invoice.getLineItems()).isNotEmpty();
 
         Company actualSeller = invoice.getSeller();
         assertThat(actualSeller.email()).isEqualTo(SELLER_EMAIL);
@@ -356,9 +357,46 @@ class InvoiceRestControllerTest {
         assertThat(actualBuyerAddress.postalCode()).isEqualTo(BUYER_POSTAL_CODE);
         assertThat(actualBuyerAddress.street()).isEqualTo(BUYER_STREET);
 
-        Optional<Invoice> optionalInvoice = invoiceRepository.findByUuid(invoice.getUuid());
-        assertThat(optionalInvoice).isPresent();
+        Optional<Invoice> invoiceFromQuery = invoiceRepository.findByUuid(invoice.getUuid());
+        assertThat(invoiceFromQuery).isPresent();
+        Invoice expectedInvoice = invoiceFromQuery.get();
 
-//        assertThat(optionalInvoice.get()).isEqualTo(invoice);
+        assertThat(invoice.getUuid()).isEqualTo(expectedInvoice.getUuid());
+        assertThat(invoice.getInvoiceHeader()).isEqualTo(expectedInvoice.getInvoiceHeader());
+        assertThat(invoice.getInvoiceDate()).isEqualTo(expectedInvoice.getInvoiceDate());
+        assertThat(invoice.getDueTime()).isEqualTo(expectedInvoice.getDueTime());
+
+        assertThat(invoice.getSeller().name()).isEqualTo(expectedInvoice.getSeller().name());
+        assertThat(invoice.getSeller().phoneNumber()).isEqualTo(expectedInvoice.getSeller().phoneNumber());
+        assertThat(invoice.getSeller().email()).isEqualTo(expectedInvoice.getSeller().email());
+        assertThat(invoice.getSeller().address().street()).isEqualTo(expectedInvoice.getSeller().address().street());
+        assertThat(invoice.getSeller().address().city()).isEqualTo(expectedInvoice.getSeller().address().city());
+        assertThat(invoice.getSeller().address().postalCode()).isEqualTo(expectedInvoice.getSeller().address().postalCode());
+        assertThat(invoice.getSeller().address().country()).isEqualTo(expectedInvoice.getSeller().address().country());
+
+        assertThat(invoice.getBuyer().name()).isEqualTo(expectedInvoice.getBuyer().name());
+        assertThat(invoice.getBuyer().phoneNumber()).isEqualTo(expectedInvoice.getBuyer().phoneNumber());
+        assertThat(invoice.getBuyer().email()).isEqualTo(expectedInvoice.getBuyer().email());
+        assertThat(invoice.getBuyer().address().street()).isEqualTo(expectedInvoice.getBuyer().address().street());
+        assertThat(invoice.getBuyer().address().city()).isEqualTo(expectedInvoice.getBuyer().address().city());
+        assertThat(invoice.getBuyer().address().postalCode()).isEqualTo(expectedInvoice.getBuyer().address().postalCode());
+        assertThat(invoice.getBuyer().address().country()).isEqualTo(expectedInvoice.getBuyer().address().country());
+
+        assertThat(invoice.getLineItems()).hasSize(expectedInvoice.getLineItems().size());
+        LineItem actualLineItem = invoice.getLineItems().getFirst();
+        LineItem expectedLineItem = expectedInvoice.getLineItems().getFirst();
+
+        assertThat(actualLineItem.getDescription()).isEqualTo(expectedLineItem.getDescription());
+        assertThat(actualLineItem.getAmountPerItem()).isEqualTo(expectedLineItem.getAmountPerItem());
+        assertThat(actualLineItem.getTotalAmount()).isEqualTo(expectedLineItem.getTotalAmount());
+        assertThat(actualLineItem.getTotalTaxAmount()).isEqualTo(expectedLineItem.getTotalTaxAmount());
+        assertThat(actualLineItem.getQuantity()).isEqualTo(expectedLineItem.getQuantity());
+        assertThat(actualLineItem.getTax().intValue()).isEqualTo(expectedLineItem.getTax().intValue());
+
+        assertThat(invoice.getTotalAmount()).isEqualTo(expectedInvoice.getTotalAmount());
+        assertThat(invoice.getTotalTaxAmount()).isEqualTo(expectedInvoice.getTotalTaxAmount());
+        assertThat(invoice.getPaymentLink()).isEqualTo(expectedInvoice.getPaymentLink());
+        assertThat(invoice.getCurrency()).isEqualTo(expectedInvoice.getCurrency());
+        assertThat(invoice.isPaid()).isEqualTo(expectedInvoice.isPaid());
     }
 }

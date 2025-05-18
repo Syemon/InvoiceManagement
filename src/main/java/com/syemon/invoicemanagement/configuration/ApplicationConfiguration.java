@@ -9,7 +9,9 @@ import com.syemon.invoicemanagement.domain.LineItemMapper;
 import com.syemon.invoicemanagement.infrastructure.InvoiceInfrastructureMapper;
 import com.syemon.invoicemanagement.infrastructure.InvoiceJpaRepository;
 import com.syemon.invoicemanagement.infrastructure.LineItemInfrastructureMapper;
+import com.syemon.invoicemanagement.infrastructure.LineItemJpaRepository;
 import com.syemon.invoicemanagement.infrastructure.PostgresInvoiceRepository;
+import com.syemon.invoicemanagement.infrastructure.PostgresLineItemRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -49,7 +51,10 @@ public class ApplicationConfiguration {
             PostgresInvoiceRepository postgresInvoiceRepository,
             InvoiceMapper invoiceMapper
     ) {
-        return new CreateInvoiceService(postgresInvoiceRepository, invoiceMapper);
+        return new CreateInvoiceService(
+                postgresInvoiceRepository,
+                invoiceMapper
+        );
     }
 
     @Bean
@@ -57,6 +62,17 @@ public class ApplicationConfiguration {
             InvoiceJpaRepository invoiceJpaRepository,
             InvoiceInfrastructureMapper invoiceInfrastructureMapper) {
         return new PostgresInvoiceRepository(invoiceJpaRepository, invoiceInfrastructureMapper);
+    }
+
+    @Bean
+    public PostgresLineItemRepository postgresLineItemRepository(
+            LineItemJpaRepository lineItemJpaRepository,
+            LineItemInfrastructureMapper lineItemInfrastructureMapper
+    ) {
+        return new PostgresLineItemRepository(
+                lineItemJpaRepository,
+                lineItemInfrastructureMapper
+        );
     }
 
     @Bean

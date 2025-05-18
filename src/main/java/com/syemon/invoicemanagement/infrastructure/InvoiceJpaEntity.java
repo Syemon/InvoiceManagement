@@ -61,7 +61,7 @@ public class InvoiceJpaEntity {
     private String buyerAddressZipCode;
     private String buyerAddressCountry;
 
-    @OneToMany(mappedBy = "invoice")
+    @OneToMany(mappedBy = "invoice", cascade = CascadeType.PERSIST)
     private List<LineItemJpaEntity> lineItems;
 
     private BigDecimal totalAmount;

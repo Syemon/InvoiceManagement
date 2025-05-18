@@ -20,4 +20,5 @@ public class CreateInvoiceService {
         log.info("Invoice {} persisted successfully", uuid);
         return persistedInvoice;
     }
+
 }

@@ -7,8 +7,10 @@ import com.syemon.invoicemanagement.domain.LineItem;
 import com.syemon.invoicemanagement.domain.Money;
 import lombok.AllArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 public class InvoiceInfrastructureMapper {
@@ -20,7 +22,7 @@ public class InvoiceInfrastructureMapper {
             return null;
         }
 
-        return new InvoiceJpaEntity()
+        InvoiceJpaEntity invoiceJpaEntity = new InvoiceJpaEntity()
                 .setUuid(invoice.getUuid())
                 .setInvoiceHeader(invoice.getInvoiceHeader())
                 .setInvoiceDate(invoice.getInvoiceDate())
@@ -39,14 +41,18 @@ public class InvoiceInfrastructureMapper {
                 .setBuyerAddressCity(invoice.getBuyer().address().city())
                 .setBuyerAddressZipCode(invoice.getBuyer().address().postalCode())
                 .setBuyerAddressCountry(invoice.getBuyer().address().country())
-                .setLineItems(invoice.getLineItems().stream()
-                        .map(lineItemInfrastructureMapper::toEntity)
-                        .toList())
+
                 .setTotalAmount(Optional.ofNullable(invoice.getTotalAmount()).map(Money::getAmount).orElse(null))
                 .setTotalTaxAmount(Optional.ofNullable(invoice.getTotalTaxAmount()).map(Money::getAmount).orElse(null))
                 .setPaymentLink(invoice.getPaymentLink())
                 .setCurrency(invoice.getCurrency())
                 .setPaid(invoice.isPaid());
+
+                invoiceJpaEntity.setLineItems(invoice.getLineItems().stream()
+                    .map(lineItemInfrastructureMapper::toEntity).map(lineItemJpaEntity -> lineItemJpaEntity.setInvoice(invoiceJpaEntity))
+                    .toList());
+
+                return invoiceJpaEntity;
     }
 
     public Invoice toDomain(InvoiceJpaEntity entity) {
@@ -79,7 +85,7 @@ public class InvoiceInfrastructureMapper {
         List<LineItem> lineItems = entity.getLineItems()
                 .stream()
                 .map(lineItemInfrastructureMapper::toDomain)
-                .toList();
+                .collect(Collectors.toCollection(ArrayList::new));
 
         return Invoice.builder()
                 .uuid(entity.getUuid())

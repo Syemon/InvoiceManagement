@@ -7,6 +7,7 @@ import lombok.ToString;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.Currency;
 import java.util.List;
 import java.util.UUID;
@@ -22,7 +23,7 @@ public class Invoice {
     private OffsetDateTime dueTime;
     private Company seller;
     private Company buyer;
-    private List<LineItem> lineItems;
+    private List<LineItem> lineItems = new ArrayList<>();
     private Money totalAmount;
     private Money totalTaxAmount;
     private String paymentLink;
@@ -81,6 +82,11 @@ public class Invoice {
             uuid = UUID.randomUUID();
         }
         return uuid;
+    }
+
+    public List<LineItem> addLineItems(List<LineItem> lineItems) {
+        this.lineItems.addAll(lineItems);
+        return this.lineItems;
     }
 
 }
