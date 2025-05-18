@@ -2,6 +2,7 @@ package com.syemon.invoicemanagement.application;
 
 import com.syemon.invoicemanagement.domain.Company;
 import com.syemon.invoicemanagement.domain.DocumentType;
+import com.syemon.invoicemanagement.domain.InvoiceStatus;
 import com.syemon.invoicemanagement.domain.LineItem;
 import com.syemon.invoicemanagement.domain.Money;
 import lombok.Builder;
@@ -33,4 +34,5 @@ public class InvoiceModel {
     private String paymentLink;
     private Currency currency;
     private boolean paid;
+    private InvoiceStatus invoiceStatus;
 }

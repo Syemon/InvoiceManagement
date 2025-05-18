@@ -1,6 +1,7 @@
 package com.syemon.invoicemanagement.application.create;
 
 import com.syemon.invoicemanagement.application.mapper.InvoiceApplicationMapper;
+import com.syemon.invoicemanagement.domain.InvoiceStatus;
 import com.syemon.invoicemanagement.domain.Owner;
 import com.syemon.invoicemanagement.domain.Invoice;
 import com.syemon.invoicemanagement.infrastructure.InvoiceInfrastructureMapper;
@@ -26,6 +27,7 @@ public class CreateInvoiceApplicationService {
     public CreateInvoiceResponse createInvoice(CreateInvoiceRequest createInvoiceRequest, Owner owner) {
         Invoice invoice = invoiceApplicationMapper.toDomain(createInvoiceRequest);
         invoice.generateId();
+        invoice.setInvoiceStatus(InvoiceStatus.NEW);
 
         Invoice persistedInvoice = persistEntities(owner, invoice);
 

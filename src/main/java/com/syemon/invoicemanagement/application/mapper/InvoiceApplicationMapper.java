@@ -17,8 +17,6 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class InvoiceApplicationMapper {
 
-//    private final LineItemApplicationMapper lineItemMapper;
-
     public Invoice toDomain(CreateInvoiceRequest request) {
         Company seller = toDomain(request.seller());
         Company buyer = toDomain(request.buyer());
@@ -53,6 +51,7 @@ public class InvoiceApplicationMapper {
                 .paymentLink(invoice.getPaymentLink())
                 .currency(invoice.getCurrency())
                 .paid(invoice.isPaid())
+                .invoiceStatus(invoice.getInvoiceStatus())
                 .build();
     }
 

@@ -1,6 +1,7 @@
 package com.syemon.invoicemanagement.infrastructure;
 
 import com.syemon.invoicemanagement.domain.DocumentType;
+import com.syemon.invoicemanagement.domain.InvoiceStatus;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -61,6 +62,8 @@ public class InvoiceJpaEntity {
     private String buyerAddressCity;
     private String buyerAddressZipCode;
     private String buyerAddressCountry;
+    @Enumerated(EnumType.STRING)
+    private InvoiceStatus invoiceStatus;
 
     @OneToMany(mappedBy = "invoice", cascade = CascadeType.PERSIST)
     private List<LineItemJpaEntity> lineItems;

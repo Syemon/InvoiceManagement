@@ -1,6 +1,5 @@
 package com.syemon.invoicemanagement.infrastructure;
 
-import com.syemon.invoicemanagement.domain.Owner;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 

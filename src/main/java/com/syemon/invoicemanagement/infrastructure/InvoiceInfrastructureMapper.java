@@ -41,12 +41,12 @@ public class InvoiceInfrastructureMapper {
                 .setBuyerAddressCity(invoice.getBuyer().address().city())
                 .setBuyerAddressZipCode(invoice.getBuyer().address().postalCode())
                 .setBuyerAddressCountry(invoice.getBuyer().address().country())
-
                 .setTotalAmount(Optional.ofNullable(invoice.getTotalAmount()).map(Money::getAmount).orElse(null))
                 .setTotalTaxAmount(Optional.ofNullable(invoice.getTotalTaxAmount()).map(Money::getAmount).orElse(null))
                 .setPaymentLink(invoice.getPaymentLink())
                 .setCurrency(invoice.getCurrency())
-                .setPaid(invoice.isPaid());
+                .setPaid(invoice.isPaid())
+                .setInvoiceStatus(invoice.getInvoiceStatus());
 
                 invoiceJpaEntity.setLineItems(invoice.getLineItems().stream()
                     .map(lineItemInfrastructureMapper::toEntity).map(lineItemJpaEntity -> lineItemJpaEntity.setInvoice(invoiceJpaEntity))
@@ -108,6 +108,7 @@ public class InvoiceInfrastructureMapper {
                 .paymentLink(entity.getPaymentLink())
                 .currency(entity.getCurrency())
                 .paid(entity.isPaid())
+                .invoiceStatus(entity.getInvoiceStatus())
                 .build();
     }
 }

@@ -30,6 +30,7 @@ public class Invoice {
     private Currency currency;
     private boolean paid = false;
     private Owner owner;
+    private InvoiceStatus invoiceStatus;
 
     public Invoice() {
     }
@@ -44,7 +45,7 @@ public class Invoice {
         this.currency = currency;
     }
 
-    public Invoice(UUID uuid, DocumentType invoiceHeader, OffsetDateTime invoiceDate, OffsetDateTime dueTime, Company seller, Company buyer, List<LineItem> lineItems, Money totalAmount, Money totalTaxAmount, String paymentLink, Currency currency, boolean paid, Owner owner) {
+    public Invoice(UUID uuid, DocumentType invoiceHeader, OffsetDateTime invoiceDate, OffsetDateTime dueTime, Company seller, Company buyer, List<LineItem> lineItems, Money totalAmount, Money totalTaxAmount, String paymentLink, Currency currency, boolean paid, Owner owner, InvoiceStatus invoiceStatus) {
         this.uuid = uuid;
         this.invoiceHeader = invoiceHeader;
         this.invoiceDate = invoiceDate;
@@ -58,6 +59,7 @@ public class Invoice {
         this.currency = currency;
         this.paid = paid;
         this.owner = owner;
+        this.invoiceStatus = invoiceStatus;
     }
 
     public Money calculateTotalAmountAndTotalTaxAmount() {
@@ -84,6 +86,11 @@ public class Invoice {
             uuid = UUID.randomUUID();
         }
         return uuid;
+    }
+
+    public Invoice setInvoiceStatus(InvoiceStatus invoiceStatus) {
+        this.invoiceStatus = invoiceStatus;
+        return this;
     }
 
     public List<LineItem> addLineItems(List<LineItem> lineItems) {

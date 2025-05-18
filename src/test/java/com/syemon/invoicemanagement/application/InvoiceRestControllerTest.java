@@ -10,6 +10,7 @@ import com.syemon.invoicemanagement.domain.Address;
 import com.syemon.invoicemanagement.domain.Company;
 import com.syemon.invoicemanagement.domain.DocumentType;
 import com.syemon.invoicemanagement.domain.Invoice;
+import com.syemon.invoicemanagement.domain.InvoiceStatus;
 import com.syemon.invoicemanagement.infrastructure.InvoiceRepository;
 import com.syemon.invoicemanagement.domain.LineItem;
 import com.syemon.invoicemanagement.infrastructure.OwnerJpaEntity;
@@ -369,6 +370,7 @@ class InvoiceRestControllerTest {
         assertThat(invoiceModel.isPaid()).isFalse();
         assertThat(invoiceModel.getCurrency()).isEqualTo(EUR_CURRENCY);
         assertThat(invoiceModel.getLineItems()).isNotEmpty();
+        assertThat(invoiceModel.getInvoiceStatus()).isEqualTo(InvoiceStatus.NEW);
 
         Company actualSeller = invoiceModel.getSeller();
         assertThat(actualSeller.email()).isEqualTo(SELLER_EMAIL);
@@ -435,5 +437,6 @@ class InvoiceRestControllerTest {
         assertThat(invoiceModel.getPaymentLink()).isEqualTo(expectedInvoice.getPaymentLink());
         assertThat(invoiceModel.getCurrency()).isEqualTo(expectedInvoice.getCurrency());
         assertThat(invoiceModel.isPaid()).isEqualTo(expectedInvoice.isPaid());
+        assertThat(invoiceModel.getInvoiceStatus()).isEqualTo(expectedInvoice.getInvoiceStatus());
     }
 }
