@@ -1,9 +1,13 @@
 package com.syemon.invoicemanagement.domain;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 public record Company(
-        String name,
-        String phoneNumber,
+        @NotBlank String name,
+        @NotBlank String phoneNumber,
         String email,
-        Address address
+        @Valid @NotNull Address address
 ) {
 }

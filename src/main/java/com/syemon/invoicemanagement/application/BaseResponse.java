@@ -10,5 +10,4 @@ public class BaseResponse<T> {
     protected String errorMessage;
     protected Map<String, String> invalidFields;
     protected T data;
-
 }
