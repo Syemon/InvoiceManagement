@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @AllArgsConstructor
 public class CreateInvoiceApplicationService {
+    public static final String SUCCESS_DESCRIPTION = "Invoice accepted. Will calculate items in up to 30 minutes";
     private final CreateInvoiceService createInvoiceService;
     private final InvoiceApplicationMapper invoiceApplicationMapper;
 
@@ -18,7 +19,8 @@ public class CreateInvoiceApplicationService {
 
         CreateInvoiceResponse response = new CreateInvoiceResponse();
         response.setStatus(200);
-        response.setData(persistedInvoice);
+        response.setData(invoiceApplicationMapper.toModel(persistedInvoice));
+        response.setDescription(SUCCESS_DESCRIPTION);
         return response;
     }
 }

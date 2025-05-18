@@ -2,6 +2,7 @@ package com.syemon.invoicemanagement.application.mapper;
 
 import com.syemon.invoicemanagement.application.AddressModel;
 import com.syemon.invoicemanagement.application.CompanyModel;
+import com.syemon.invoicemanagement.application.InvoiceModel;
 import com.syemon.invoicemanagement.application.create.CreateInvoiceRequest;
 import com.syemon.invoicemanagement.domain.Address;
 import com.syemon.invoicemanagement.domain.Company;
@@ -35,6 +36,23 @@ public class InvoiceApplicationMapper {
                 .currency(command.currency())
                 .build();
 
+    }
+
+    public InvoiceModel toModel(Invoice invoice) {
+        return InvoiceModel.builder()
+                .uuid(invoice.getUuid())
+                .invoiceHeader(invoice.getInvoiceHeader())
+                .invoiceDate(invoice.getInvoiceDate())
+                .dueTime(invoice.getDueTime())
+                .seller(invoice.getSeller())
+                .buyer(invoice.getBuyer())
+                .lineItems(invoice.getLineItems())
+                .totalAmount(invoice.getTotalAmount())
+                .totalTaxAmount(invoice.getTotalTaxAmount())
+                .paymentLink(invoice.getPaymentLink())
+                .currency(invoice.getCurrency())
+                .paid(invoice.isPaid())
+                .build();
     }
 
     public Company toDomain(CompanyModel companyModel) {

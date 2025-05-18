@@ -7,6 +7,7 @@ import java.util.Map;
 @Data
 public class BaseResponse<T> {
     protected int status;
+    protected String description;
     protected String errorMessage;
     protected Map<String, String> invalidFields;
     protected T data;
