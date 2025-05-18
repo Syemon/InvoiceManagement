@@ -1,7 +1,9 @@
 package com.syemon.invoicemanagement.domain;
 
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
@@ -11,6 +13,8 @@ import java.util.UUID;
 
 @Getter
 @Builder
+@ToString
+@EqualsAndHashCode
 public class Invoice {
     private UUID uuid;
     private DocumentType invoiceHeader;
@@ -22,8 +26,11 @@ public class Invoice {
     private Money totalAmount;
     private Money totalTaxAmount;
     private String paymentLink;
-    private final Currency currency;
+    private Currency currency;
     private boolean paid = false;
+
+    public Invoice() {
+    }
 
     public Invoice(List<LineItem> lineItems, Company buyer, Company seller, OffsetDateTime dueTime, OffsetDateTime invoiceDate, DocumentType invoiceHeader, Currency currency) {
         this.lineItems = lineItems;

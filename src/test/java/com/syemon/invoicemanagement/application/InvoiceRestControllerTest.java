@@ -5,6 +5,9 @@ import com.syemon.invoicemanagement.TestcontainersConfiguration;
 import com.syemon.invoicemanagement.domain.Address;
 import com.syemon.invoicemanagement.domain.Company;
 import com.syemon.invoicemanagement.domain.DocumentType;
+import com.syemon.invoicemanagement.domain.Invoice;
+import com.syemon.invoicemanagement.domain.InvoiceRepository;
+import com.syemon.invoicemanagement.infrastructure.InvoiceJpaEntity;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -24,6 +27,7 @@ import java.util.Currency;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -63,6 +67,8 @@ class InvoiceRestControllerTest {
     private ObjectMapper objectMapper;
     @Autowired
     private MockMvc mockMvc;
+    @Autowired
+    private InvoiceRepository invoiceRepository;
 
     @Test
     void create_shouldReturn400_whenNotValid() throws Exception {
@@ -240,5 +246,119 @@ class InvoiceRestControllerTest {
                         )
                 )
         );
+    }
+
+    @Test
+    void create_shouldPersistInvoice() throws Exception {
+        //given
+        OffsetDateTime invoiceDate = OffsetDateTime.now();
+        OffsetDateTime dueTime = invoiceDate.plusMonths(1);
+
+        Address buyerAddress = new Address(
+                BUYER_STREET,
+                BUYER_CITY,
+                BUYER_POSTAL_CODE,
+                BUYER_COUNTRY
+        );
+
+        Company buyer = new Company(
+                BUYER_COMPANY_NAME,
+                BUYER_PHONE_NUMBER,
+                BUYER_EMAIL,
+                buyerAddress
+        );
+
+        Address sellerAddress = new Address(
+                SELLER_STREET,
+                SELLER_CITY,
+                SELLER_POSTAL_CODE,
+                SELLER_COUNTRY
+        );
+
+        Company seller = new Company(
+                SELLER_COMPANY_NAME,
+                SELLER_PHONE_NUMBER,
+                SELLER_EMAIL,
+                sellerAddress
+        );
+
+        List<CreateLineItemRequest> lineItemsCommand = List.of(
+                new CreateLineItemRequest(
+                        PRODUCT_DESCRIPTION,
+                        AMOUNT_PER_ITEM,
+                        QUANTITY,
+                        TAX
+                )
+        );
+
+        CreateInvoiceRequest request = new CreateInvoiceRequest(
+                INVOICE_HEADER,
+                invoiceDate,
+                dueTime,
+                seller,
+                buyer,
+                lineItemsCommand,
+                EUR_CURRENCY
+        );
+
+        String body = objectMapper.writeValueAsString(request);
+
+        //when
+        ResultActions resultActions = mockMvc.perform(
+                post("/invoice")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body)
+                        .with(csrf())
+        );
+
+        //then
+        String rawBody = resultActions
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+
+        CreateInvoiceResponse response = objectMapper.readValue(rawBody, CreateInvoiceResponse.class);
+        assertThat(response.getInvalidFields()).isNullOrEmpty();
+        assertThat(response.getStatus()).isEqualTo(200);
+        assertThat(response.getData()).isNotNull();
+
+        Invoice invoice = response.getData();
+        assertThat(invoice.getUuid()).isNotNull();
+        assertThat(invoice.getInvoiceHeader()).isEqualTo(INVOICE_HEADER);
+        assertThat(invoice.getInvoiceDate()).isEqualTo(invoiceDate);
+        assertThat(invoice.getDueTime()).isEqualTo(dueTime);
+        assertThat(invoice.getSeller()).isNotNull();
+        assertThat(invoice.getBuyer()).isNotNull();
+        assertThat(invoice.getPaymentLink()).isNull();
+        assertThat(invoice.isPaid()).isFalse();
+        assertThat(invoice.getCurrency()).isEqualTo(EUR_CURRENCY);
+
+        Company actualSeller = invoice.getSeller();
+        assertThat(actualSeller.email()).isEqualTo(SELLER_EMAIL);
+        assertThat(actualSeller.name()).isEqualTo(SELLER_COMPANY_NAME);
+        assertThat(actualSeller.phoneNumber()).isEqualTo(SELLER_PHONE_NUMBER);
+        assertThat(actualSeller.address()).isNotNull();
+
+        Address actualSellerAddress = actualSeller.address();
+        assertThat(actualSellerAddress.city()).isEqualTo(SELLER_CITY);
+        assertThat(actualSellerAddress.country()).isEqualTo(SELLER_COUNTRY);
+        assertThat(actualSellerAddress.postalCode()).isEqualTo(SELLER_POSTAL_CODE);
+        assertThat(actualSellerAddress.street()).isEqualTo(SELLER_STREET);
+
+        Company actualBuyer = invoice.getBuyer();
+        assertThat(actualBuyer.email()).isEqualTo(BUYER_EMAIL);
+        assertThat(actualBuyer.name()).isEqualTo(BUYER_COMPANY_NAME);
+        assertThat(actualBuyer.phoneNumber()).isEqualTo(BUYER_PHONE_NUMBER);
+        assertThat(actualBuyer.address()).isNotNull();
+
+        Address actualBuyerAddress = actualBuyer.address();
+        assertThat(actualBuyerAddress.city()).isEqualTo(BUYER_CITY);
+        assertThat(actualBuyerAddress.country()).isEqualTo(BUYER_COUNTRY);
+        assertThat(actualBuyerAddress.postalCode()).isEqualTo(BUYER_POSTAL_CODE);
+        assertThat(actualBuyerAddress.street()).isEqualTo(BUYER_STREET);
+
+        Optional<Invoice> optionalInvoice = invoiceRepository.findByUuid(invoice.getUuid());
+        assertThat(optionalInvoice).isPresent();
+
+//        assertThat(optionalInvoice.get()).isEqualTo(invoice);
     }
 }

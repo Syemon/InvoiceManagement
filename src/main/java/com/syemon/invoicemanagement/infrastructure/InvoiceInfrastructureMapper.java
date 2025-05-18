@@ -9,7 +9,6 @@ import lombok.AllArgsConstructor;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @AllArgsConstructor
 public class InvoiceInfrastructureMapper {
@@ -42,7 +41,7 @@ public class InvoiceInfrastructureMapper {
                 .setBuyerAddressCountry(invoice.getBuyer().address().country())
                 .setLineItems(invoice.getLineItems().stream()
                         .map(lineItemInfrastructureMapper::toEntity)
-                        .collect(Collectors.toList()))
+                        .toList())
                 .setTotalAmount(Optional.ofNullable(invoice.getTotalAmount()).map(Money::getAmount).orElse(null))
                 .setTotalTaxAmount(Optional.ofNullable(invoice.getTotalTaxAmount()).map(Money::getAmount).orElse(null))
                 .setPaymentLink(invoice.getPaymentLink())
@@ -90,8 +89,16 @@ public class InvoiceInfrastructureMapper {
                 .seller(seller)
                 .buyer(buyer)
                 .lineItems(lineItems)
-                .totalAmount(Money.of(entity.getTotalAmount(), entity.getCurrency()))
-                .totalTaxAmount(Money.of(entity.getTotalTaxAmount(), entity.getCurrency()))
+                .totalAmount(
+                        entity.getTotalAmount() != null
+                                ? Money.of(entity.getTotalAmount(), entity.getCurrency())
+                                : null
+                )
+                .totalTaxAmount(
+                        entity.getTotalTaxAmount() != null
+                                ? Money.of(entity.getTotalTaxAmount(), entity.getCurrency())
+                                : null
+                )
                 .paymentLink(entity.getPaymentLink())
                 .currency(entity.getCurrency())
                 .paid(entity.isPaid())
