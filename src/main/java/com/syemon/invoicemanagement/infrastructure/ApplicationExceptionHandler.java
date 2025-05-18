@@ -1,5 +1,6 @@
-package com.syemon.invoicemanagement.application;
+package com.syemon.invoicemanagement.infrastructure;
 
+import com.syemon.invoicemanagement.application.GenericRestResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
