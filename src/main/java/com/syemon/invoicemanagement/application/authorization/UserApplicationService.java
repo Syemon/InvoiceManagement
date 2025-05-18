@@ -1,8 +1,7 @@
 package com.syemon.invoicemanagement.application.authorization;
 
-import com.syemon.invoicemanagement.domain.User;
-import com.syemon.invoicemanagement.infrastructure.UserJpaEntity;
-import com.syemon.invoicemanagement.infrastructure.UserJpaRepository;
+import com.syemon.invoicemanagement.infrastructure.OwnerJpaEntity;
+import com.syemon.invoicemanagement.infrastructure.OwnerJpaRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -11,34 +10,33 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
-@Service
+@Service//TODO: for now it is more of an util class
 @AllArgsConstructor
 public class UserApplicationService {
-    private final UserJpaRepository userRepository;
+    private final OwnerJpaRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public List<UserJpaEntity> getAllUsers() {
+    public List<OwnerJpaEntity> getAllUsers() {
         return userRepository.findAll();
     }
 
     @Transactional
-    public Optional<UserJpaEntity> getUserById(Long id) {
+    public Optional<OwnerJpaEntity> getUserById(Long id) {
         return userRepository.findById(id);
     }
 
     @Transactional
-    public Optional<UserJpaEntity> getUserByUsername(String username) {
+    public Optional<OwnerJpaEntity> getUserByUsername(String username) {
         return userRepository.findByUsername(username);
     }
 
     @Transactional
-    public UserJpaEntity createUser(UserJpaEntity user) {
-        if (userRepository.findByUsername(user.getLogin()).isPresent()) {
-            throw new RuntimeException("Username already exists: " + user.getLogin());
+    public OwnerJpaEntity createUser(OwnerJpaEntity user) {
+        if (userRepository.findByUsername(user.getUsername()).isPresent()) {
+            throw new RuntimeException("Username already exists: " + user.getUsername());
         }
 
-        // Encode password before saving
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         return userRepository.save(user);

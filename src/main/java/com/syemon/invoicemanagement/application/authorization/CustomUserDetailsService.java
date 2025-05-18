@@ -1,6 +1,6 @@
 package com.syemon.invoicemanagement.application.authorization;
 
-import com.syemon.invoicemanagement.infrastructure.UserJpaRepository;
+import com.syemon.invoicemanagement.infrastructure.OwnerPostgresRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,12 +12,12 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService { //TODO: domain user interface
 
-    private final UserJpaRepository userJpaRepository;
+    private final OwnerPostgresRepository repository;
 
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userJpaRepository.findByUsername(username)
+        return repository.findByUsername(username)
                 .map(user -> User.builder()
                         .username(user.getUsername())
                         .password(user.getPassword())

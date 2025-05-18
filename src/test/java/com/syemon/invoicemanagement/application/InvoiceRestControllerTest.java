@@ -12,7 +12,7 @@ import com.syemon.invoicemanagement.domain.DocumentType;
 import com.syemon.invoicemanagement.domain.Invoice;
 import com.syemon.invoicemanagement.domain.InvoiceRepository;
 import com.syemon.invoicemanagement.domain.LineItem;
-import com.syemon.invoicemanagement.infrastructure.UserJpaEntity;
+import com.syemon.invoicemanagement.infrastructure.OwnerJpaEntity;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -84,11 +84,10 @@ class InvoiceRestControllerTest {
         //given
         String username = "username";
         String password = "username";
-        UserJpaEntity userJpaEntity = new UserJpaEntity()
+        OwnerJpaEntity ownerJpaEntity = new OwnerJpaEntity()
                 .setUsername(username)
-                        .setLogin(username)
-                                .setPassword(password);
-        userApplicationService.createUser(userJpaEntity);
+                .setPassword(password);
+        userApplicationService.createUser(ownerJpaEntity);
 
         String body = objectMapper.writeValueAsString(
                 new CreateInvoiceRequest(null, null, null, null, null, null, null)
@@ -329,11 +328,10 @@ class InvoiceRestControllerTest {
 
         String username = "username3";
         String password = "username3";
-        UserJpaEntity userJpaEntity = new UserJpaEntity()
+        OwnerJpaEntity ownerJpaEntity = new OwnerJpaEntity()
                 .setUsername(username)
-                .setLogin(username)
                 .setPassword(password);
-        userApplicationService.createUser(userJpaEntity);
+        userApplicationService.createUser(ownerJpaEntity);
 
 
         String body = objectMapper.writeValueAsString(request);

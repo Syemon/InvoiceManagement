@@ -10,13 +10,11 @@ import lombok.Data;
 @Entity
 @Data
 @Table(name = "owner")
-public class UserJpaEntity {
+public class OwnerJpaEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String login;
-
     private String username;
     private String password;
 }

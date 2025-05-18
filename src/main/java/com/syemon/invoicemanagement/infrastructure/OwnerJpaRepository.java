@@ -6,8 +6,8 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface UserJpaRepository extends JpaRepository<UserJpaEntity, Long> {
+public interface OwnerJpaRepository extends JpaRepository<OwnerJpaEntity, Long> {
 
-    Optional<UserJpaEntity> findByUsername(String username);
+    Optional<OwnerJpaEntity> findByUsername(String username);
 
 }
