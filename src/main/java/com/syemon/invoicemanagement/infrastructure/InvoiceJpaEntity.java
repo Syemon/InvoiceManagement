@@ -32,7 +32,7 @@ import java.util.UUID;
                 query = """
                 SELECT i
                 FROM InvoiceJpaEntity i
-                WHERE i.invoiceStatus = :status
+                WHERE i.invoiceStatus IN :status
                 ORDER BY i.createTime ASC
                 LIMIT :limit
 """)

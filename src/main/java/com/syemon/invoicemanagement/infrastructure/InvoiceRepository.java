@@ -10,5 +10,5 @@ import java.util.UUID;
 public interface InvoiceRepository {
     InvoiceJpaEntity save(InvoiceJpaEntity invoice);
     Optional<Invoice> findByUuid(UUID uuid);
-    List<InvoiceJpaEntity> findInvoicesByStatus(InvoiceStatus status, Integer limit);
+    List<InvoiceJpaEntity> findInvoicesByStatusIn(List<InvoiceStatus> status, Integer limit);
 }

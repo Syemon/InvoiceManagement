@@ -5,5 +5,6 @@ public enum InvoiceStatus {
     IN_PROGRESS,
     DONE,
     FAILED,
-    RETRY
+    RETRY;
+
 }
