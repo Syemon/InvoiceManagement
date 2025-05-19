@@ -24,8 +24,8 @@ public class Invoice {
     private Company seller;
     private Company buyer;
     private List<LineItem> lineItems = new ArrayList<>();
-    private Money totalAmount;
-    private Money totalTaxAmount;
+    private BigDecimal totalAmount;
+    private BigDecimal totalTaxAmount;
     private String paymentLink;
     private Currency currency;
     private boolean paid = false;
@@ -45,7 +45,7 @@ public class Invoice {
         this.currency = currency;
     }
 
-    public Invoice(UUID uuid, DocumentType invoiceHeader, OffsetDateTime invoiceDate, OffsetDateTime dueTime, Company seller, Company buyer, List<LineItem> lineItems, Money totalAmount, Money totalTaxAmount, String paymentLink, Currency currency, boolean paid, Owner owner, InvoiceStatus invoiceStatus) {
+    public Invoice(UUID uuid, DocumentType invoiceHeader, OffsetDateTime invoiceDate, OffsetDateTime dueTime, Company seller, Company buyer, List<LineItem> lineItems, BigDecimal totalAmount, BigDecimal totalTaxAmount, String paymentLink, Currency currency, boolean paid, Owner owner, InvoiceStatus invoiceStatus) {
         this.uuid = uuid;
         this.invoiceHeader = invoiceHeader;
         this.invoiceDate = invoiceDate;
@@ -62,7 +62,7 @@ public class Invoice {
         this.invoiceStatus = invoiceStatus;
     }
 
-    public Money calculateTotalAmountAndTotalTaxAmount() {
+    public BigDecimal calculateTotalAmountAndTotalTaxAmount() {
         Money calculatedTotalAmount = Money.of(BigDecimal.ZERO, currency);
         Money calculatedTotalTaxAmount = Money.of(BigDecimal.ZERO, currency);
 
@@ -75,8 +75,8 @@ public class Invoice {
 
         }
 
-        totalAmount = calculatedTotalAmount;
-        totalTaxAmount = calculatedTotalTaxAmount;
+        totalAmount = calculatedTotalAmount.getAmount();
+        totalTaxAmount = calculatedTotalTaxAmount.getAmount();
 
         return totalAmount;
     }

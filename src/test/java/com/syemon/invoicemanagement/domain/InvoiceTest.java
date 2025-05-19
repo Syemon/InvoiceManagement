@@ -87,21 +87,12 @@ class InvoiceTest {
                 EUR_CURRENCY
         );
 
-        Money expectedTotalAmount = Money.of(
-                new BigDecimal("467.00"),
-                EUR_CURRENCY
-        );
-
         //when
         invoice.calculateTotalAmountAndTotalTaxAmount();
 
         //then
-        assertThat(invoice.getTotalAmount()).isEqualTo(expectedTotalAmount);
-        Money expectedTaxAmount = Money.of(
-                new BigDecimal("58.10"),
-                EUR_CURRENCY
-        );
-        assertThat(invoice.getTotalTaxAmount()).isEqualTo(expectedTaxAmount);
+        assertThat(invoice.getTotalAmount()).isEqualTo(new BigDecimal("467.00"));
+        assertThat(invoice.getTotalTaxAmount()).isEqualTo(new BigDecimal("58.10"));
 
         assertThat(invoice.getUuid()).isNull();
         assertThat(invoice.getInvoiceHeader()).isEqualTo(INVOICE_HEADER);

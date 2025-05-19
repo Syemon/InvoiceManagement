@@ -372,25 +372,25 @@ class InvoiceRestControllerTest {
         assertThat(invoiceModel.getLineItems()).isNotEmpty();
         assertThat(invoiceModel.getInvoiceStatus()).isEqualTo(InvoiceStatus.NEW);
 
-        Company actualSeller = invoiceModel.getSeller();
+        CompanyModel actualSeller = invoiceModel.getSeller();
         assertThat(actualSeller.email()).isEqualTo(SELLER_EMAIL);
         assertThat(actualSeller.name()).isEqualTo(SELLER_COMPANY_NAME);
         assertThat(actualSeller.phoneNumber()).isEqualTo(SELLER_PHONE_NUMBER);
         assertThat(actualSeller.address()).isNotNull();
 
-        Address actualSellerAddress = actualSeller.address();
+        AddressModel actualSellerAddress = actualSeller.address();
         assertThat(actualSellerAddress.city()).isEqualTo(SELLER_CITY);
         assertThat(actualSellerAddress.country()).isEqualTo(SELLER_COUNTRY);
         assertThat(actualSellerAddress.postalCode()).isEqualTo(SELLER_POSTAL_CODE);
         assertThat(actualSellerAddress.street()).isEqualTo(SELLER_STREET);
 
-        Company actualBuyer = invoiceModel.getBuyer();
+        CompanyModel actualBuyer = invoiceModel.getBuyer();
         assertThat(actualBuyer.email()).isEqualTo(BUYER_EMAIL);
         assertThat(actualBuyer.name()).isEqualTo(BUYER_COMPANY_NAME);
         assertThat(actualBuyer.phoneNumber()).isEqualTo(BUYER_PHONE_NUMBER);
         assertThat(actualBuyer.address()).isNotNull();
 
-        Address actualBuyerAddress = actualBuyer.address();
+        AddressModel actualBuyerAddress = actualBuyer.address();
         assertThat(actualBuyerAddress.city()).isEqualTo(BUYER_CITY);
         assertThat(actualBuyerAddress.country()).isEqualTo(BUYER_COUNTRY);
         assertThat(actualBuyerAddress.postalCode()).isEqualTo(BUYER_POSTAL_CODE);

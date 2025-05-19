@@ -92,8 +92,8 @@ class InvoiceInfrastructureMapperTest {
                 .build();
         List<LineItem> lineItems = List.of(lineItem);
 
-        Money totalAmount = Money.of(TOTAL_AMOUNT, CURRENCY);
-        Money totalTaxAmount = Money.of(TOTAL_TAX_AMOUNT, CURRENCY);
+//        Money totalAmount = Money.of(TOTAL_AMOUNT, CURRENCY);
+//        Money totalTaxAmount = Money.of(TOTAL_TAX_AMOUNT, CURRENCY);
 
         Invoice invoice = Invoice.builder()
                 .uuid(STATIC_UUID)
@@ -103,8 +103,8 @@ class InvoiceInfrastructureMapperTest {
                 .seller(seller)
                 .buyer(buyer)
                 .lineItems(lineItems)
-                .totalAmount(totalAmount)
-                .totalTaxAmount(totalTaxAmount)
+                .totalAmount(TOTAL_AMOUNT)
+                .totalTaxAmount(TOTAL_TAX_AMOUNT)
                 .paymentLink(PAYMENT_LINK)
                 .currency(CURRENCY)
                 .paid(true)
@@ -193,8 +193,8 @@ class InvoiceInfrastructureMapperTest {
         assertThat(invoice.getBuyer().address().postalCode()).isEqualTo(BUYER_ADDRESS_ZIP_CODE);
         assertThat(invoice.getBuyer().address().country()).isEqualTo(BUYER_ADDRESS_COUNTRY);
         assertThat(invoice.getLineItems()).hasSize(1);
-        assertThat(invoice.getTotalAmount().getAmount().intValue()).isEqualTo(TOTAL_AMOUNT.intValue());
-        assertThat(invoice.getTotalTaxAmount().getAmount().intValue()).isEqualTo(TOTAL_TAX_AMOUNT.intValue());
+        assertThat(invoice.getTotalAmount().intValue()).isEqualTo(TOTAL_AMOUNT.intValue());
+        assertThat(invoice.getTotalTaxAmount().intValue()).isEqualTo(TOTAL_TAX_AMOUNT.intValue());
         assertThat(invoice.getPaymentLink()).isEqualTo(PAYMENT_LINK);
         assertThat(invoice.getCurrency()).isEqualTo(CURRENCY);
         assertThat(invoice.isPaid()).isTrue();

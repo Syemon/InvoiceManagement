@@ -4,12 +4,10 @@ import com.syemon.invoicemanagement.domain.Address;
 import com.syemon.invoicemanagement.domain.Company;
 import com.syemon.invoicemanagement.domain.Invoice;
 import com.syemon.invoicemanagement.domain.LineItem;
-import com.syemon.invoicemanagement.domain.Money;
 import lombok.AllArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
@@ -41,8 +39,8 @@ public class InvoiceInfrastructureMapper {
                 .setBuyerAddressCity(invoice.getBuyer().address().city())
                 .setBuyerAddressZipCode(invoice.getBuyer().address().postalCode())
                 .setBuyerAddressCountry(invoice.getBuyer().address().country())
-                .setTotalAmount(Optional.ofNullable(invoice.getTotalAmount()).map(Money::getAmount).orElse(null))
-                .setTotalTaxAmount(Optional.ofNullable(invoice.getTotalTaxAmount()).map(Money::getAmount).orElse(null))
+                .setTotalAmount(invoice.getTotalAmount())
+                .setTotalTaxAmount(invoice.getTotalTaxAmount())
                 .setPaymentLink(invoice.getPaymentLink())
                 .setCurrency(invoice.getCurrency())
                 .setPaid(invoice.isPaid())
@@ -95,16 +93,8 @@ public class InvoiceInfrastructureMapper {
                 .seller(seller)
                 .buyer(buyer)
                 .lineItems(lineItems)
-                .totalAmount(
-                        entity.getTotalAmount() != null
-                                ? Money.of(entity.getTotalAmount(), entity.getCurrency())
-                                : null
-                )
-                .totalTaxAmount(
-                        entity.getTotalTaxAmount() != null
-                                ? Money.of(entity.getTotalTaxAmount(), entity.getCurrency())
-                                : null
-                )
+                .totalAmount(entity.getTotalAmount())
+                .totalTaxAmount(entity.getTotalTaxAmount())
                 .paymentLink(entity.getPaymentLink())
                 .currency(entity.getCurrency())
                 .paid(entity.isPaid())

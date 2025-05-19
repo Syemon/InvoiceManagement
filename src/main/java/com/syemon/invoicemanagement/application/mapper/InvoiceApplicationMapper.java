@@ -9,76 +9,60 @@ import com.syemon.invoicemanagement.domain.Address;
 import com.syemon.invoicemanagement.domain.Company;
 import com.syemon.invoicemanagement.domain.Invoice;
 import com.syemon.invoicemanagement.domain.LineItem;
+import com.syemon.invoicemanagement.domain.Money;
+import com.syemon.invoicemanagement.infrastructure.InvoiceJpaEntity;
 import lombok.AllArgsConstructor;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@AllArgsConstructor
-public class InvoiceApplicationMapper {
 
-    public Invoice toDomain(CreateInvoiceRequest request) {
-        Company seller = toDomain(request.seller());
-        Company buyer = toDomain(request.buyer());
+@Mapper(componentModel = "spring", uses = {LineItemMapper.class})
+public interface InvoiceApplicationMapper {
 
-        List<LineItem> lineItems = request.lineItems().stream()
-                .map(this::toLineItemDomain)
-                .collect(Collectors.toList());
+    @Mapping(target = "uuid", source = "uuid")
+    @Mapping(target = "invoiceHeader", source = "invoiceHeader")
+    @Mapping(target = "invoiceDate", source = "invoiceDate")
+    @Mapping(target = "dueTime", source = "dueTime")
+    @Mapping(target = "seller", expression = "java(mapSeller(invoiceJpaEntity))")
+    @Mapping(target = "buyer", expression = "java(mapBuyer(invoiceJpaEntity))")
+    @Mapping(target = "lineItems", source = "lineItems")
+    @Mapping(target = "totalAmount", source = "totalAmount")
+    @Mapping(target = "totalTaxAmount", source = "totalTaxAmount")
+    @Mapping(target = "paymentLink", source = "paymentLink")
+    @Mapping(target = "currency", source = "currency")
+    @Mapping(target = "paid", source = "paid")
+    @Mapping(target = "invoiceStatus", source = "invoiceStatus")
+    InvoiceModel toModel(InvoiceJpaEntity invoiceJpaEntity);
 
-        return Invoice.builder()
-                .invoiceHeader(request.invoiceHeader())
-                .invoiceDate(request.invoiceDate())
-                .dueTime(request.dueTime())
-                .seller(seller)
-                .buyer(buyer)
-                .lineItems(lineItems)
-                .currency(request.currency())
-                .build();
-
-    }
-
-    public InvoiceModel toModel(Invoice invoice) {
-        return InvoiceModel.builder()
-                .uuid(invoice.getUuid())
-                .invoiceHeader(invoice.getInvoiceHeader())
-                .invoiceDate(invoice.getInvoiceDate())
-                .dueTime(invoice.getDueTime())
-                .seller(invoice.getSeller())
-                .buyer(invoice.getBuyer())
-                .lineItems(invoice.getLineItems())
-                .totalAmount(invoice.getTotalAmount())
-                .totalTaxAmount(invoice.getTotalTaxAmount())
-                .paymentLink(invoice.getPaymentLink())
-                .currency(invoice.getCurrency())
-                .paid(invoice.isPaid())
-                .invoiceStatus(invoice.getInvoiceStatus())
-                .build();
-    }
-
-    public LineItem toLineItemDomain(LineItemModel command) {
-        return LineItem.builder()
-                .description(command.description())
-                .amountPerItem(command.amountPerItem())
-                .quantity(command.quantity())
-                .tax(command.tax())
-                .build();
-    }
-
-    public Company toDomain(CompanyModel companyModel) {
-        return new Company(
-                companyModel.name(),
-                companyModel.phoneNumber(),
-                companyModel.email(),
-                toDomain(companyModel.address())
+    default CompanyModel mapSeller(InvoiceJpaEntity entity) {
+        return new CompanyModel(
+                entity.getSellerName(),
+                entity.getSellerPhoneNumber(),
+                entity.getSellerEmail(),
+                new AddressModel(
+                        entity.getSellerAddressStreet(),
+                        entity.getSellerAddressCity(),
+                        entity.getSellerAddressZipCode(),
+                        entity.getSellerAddressCountry()
+                )
         );
     }
-    
-    public Address toDomain(AddressModel addressModel) {
-        return new Address(
-                addressModel.street(),
-                addressModel.city(),
-                addressModel.postalCode(),
-                addressModel.country()
+
+    default CompanyModel mapBuyer(InvoiceJpaEntity entity) {
+        return new CompanyModel(
+                entity.getBuyerName(),
+                entity.getBuyerPhoneNumber(),
+                entity.getBuyerEmail(),
+                new AddressModel(
+                        entity.getBuyerAddressStreet(),
+                        entity.getBuyerAddressCity(),
+                        entity.getBuyerAddressZipCode(),
+                        entity.getBuyerAddressCountry()
+                )
         );
     }
 }

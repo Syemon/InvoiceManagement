@@ -1,10 +1,8 @@
 package com.syemon.invoicemanagement.application.create;
 
-import com.syemon.invoicemanagement.application.mapper.InvoiceApplicationMapper;
+import com.syemon.invoicemanagement.application.mapper.InvoiceMapper;
 import com.syemon.invoicemanagement.domain.InvoiceStatus;
 import com.syemon.invoicemanagement.domain.Owner;
-import com.syemon.invoicemanagement.domain.Invoice;
-import com.syemon.invoicemanagement.infrastructure.InvoiceInfrastructureMapper;
 import com.syemon.invoicemanagement.infrastructure.InvoiceJpaEntity;
 import com.syemon.invoicemanagement.infrastructure.OwnerJpaEntity;
 import com.syemon.invoicemanagement.infrastructure.OwnerPostgresRepository;
@@ -18,31 +16,33 @@ import org.springframework.transaction.annotation.Transactional;
 @AllArgsConstructor
 public class CreateInvoiceApplicationService {
     public static final String SUCCESS_DESCRIPTION = "Invoice accepted. Will calculate items in up to 30 minutes";
+
     private final PostgresInvoiceRepository invoiceRepository;
-    private final InvoiceApplicationMapper invoiceApplicationMapper;
     private final OwnerPostgresRepository ownerPostgresRepository;
-    private final InvoiceInfrastructureMapper invoiceInfrastructureMapper;
+    private final InvoiceMapper invoiceMapper;
 
     @Transactional
     public CreateInvoiceResponse createInvoice(CreateInvoiceRequest createInvoiceRequest, Owner owner) {
-        Invoice invoice = invoiceApplicationMapper.toDomain(createInvoiceRequest);
-        invoice.generateId();
-        invoice.setInvoiceStatus(InvoiceStatus.NEW);
+        InvoiceJpaEntity invoiceJpaEntity = invoiceMapper.toEntity(createInvoiceRequest);
+        invoiceJpaEntity.setInvoiceStatus(InvoiceStatus.NEW);
 
-        Invoice persistedInvoice = persistEntities(owner, invoice);
+        InvoiceJpaEntity persistedInvoice = persistEntities(owner, invoiceJpaEntity);
 
+        return getCreateInvoiceResponse(persistedInvoice);
+    }
+
+    private CreateInvoiceResponse getCreateInvoiceResponse(InvoiceJpaEntity persistedInvoice) {
         CreateInvoiceResponse response = new CreateInvoiceResponse();
         response.setStatus(HttpStatus.ACCEPTED.value());
-        response.setData(invoiceApplicationMapper.toModel(persistedInvoice));
+        response.setData(invoiceMapper.toModel(persistedInvoice));
         response.setDescription(SUCCESS_DESCRIPTION);
         return response;
     }
 
-    private Invoice persistEntities(Owner owner, Invoice invoice) {
-        InvoiceJpaEntity invoiceJpaEntity = invoiceInfrastructureMapper.toEntity(invoice);
-        invoiceJpaEntity.getLineItems().forEach(lineItemJpaEntity -> lineItemJpaEntity.setInvoice(invoiceJpaEntity));
+    private InvoiceJpaEntity persistEntities(Owner owner, InvoiceJpaEntity invoice) {
+        invoice.getLineItems().forEach(lineItemJpaEntity -> lineItemJpaEntity.setInvoice(invoice));
         OwnerJpaEntity ownerJpaEntity = ownerPostgresRepository.findByUsername(owner.getUsername()).get();
-        invoiceJpaEntity.setOwner(ownerJpaEntity);
-        return invoiceRepository.save(invoiceJpaEntity);
+        invoice.setOwner(ownerJpaEntity);
+        return invoiceRepository.save(invoice);
     }
 }

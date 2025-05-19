@@ -4,7 +4,6 @@ import com.syemon.invoicemanagement.domain.Invoice;
 import com.syemon.invoicemanagement.domain.InvoiceStatus;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -18,9 +17,8 @@ public class PostgresInvoiceRepository {
     private final InvoiceJpaRepository repository;
     private final InvoiceInfrastructureMapper invoiceInfrastructureMapper;
 
-    public Invoice save(InvoiceJpaEntity invoiceJpaEntity) {
-        InvoiceJpaEntity persistedEntity = repository.save(invoiceJpaEntity);
-        return invoiceInfrastructureMapper.toDomain(persistedEntity);
+    public InvoiceJpaEntity save(InvoiceJpaEntity invoiceJpaEntity) {
+        return repository.save(invoiceJpaEntity);
     }
 
     @Transactional

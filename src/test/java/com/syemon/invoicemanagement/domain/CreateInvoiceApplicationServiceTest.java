@@ -8,16 +8,16 @@ import com.syemon.invoicemanagement.application.create.CreateInvoiceRequest;
 import com.syemon.invoicemanagement.application.create.CreateInvoiceResponse;
 import com.syemon.invoicemanagement.application.create.LineItemModel;
 import com.syemon.invoicemanagement.application.mapper.InvoiceApplicationMapper;
-import com.syemon.invoicemanagement.application.mapper.LineItemApplicationMapper;
-import com.syemon.invoicemanagement.infrastructure.InvoiceInfrastructureMapper;
-import com.syemon.invoicemanagement.infrastructure.InvoiceRepository;
-import com.syemon.invoicemanagement.infrastructure.LineItemInfrastructureMapper;
+import com.syemon.invoicemanagement.application.mapper.InvoiceMapper;
+import com.syemon.invoicemanagement.application.mapper.InvoiceMapperImpl;
+import com.syemon.invoicemanagement.application.mapper.LineItemMapper;
 import com.syemon.invoicemanagement.infrastructure.OwnerJpaEntity;
 import com.syemon.invoicemanagement.infrastructure.OwnerPostgresRepository;
 import com.syemon.invoicemanagement.infrastructure.PostgresInvoiceRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -59,29 +59,25 @@ class CreateInvoiceApplicationServiceTest {
     private static final BigDecimal TAX = new BigDecimal("17");
     public static final String OWNER_USERNAME = "name";
 
-    //    @InjectMocks
+//    @InjectMocks
     private CreateInvoiceApplicationService sut;
 
     @Mock
     private PostgresInvoiceRepository invoiceRepository;
-    @Spy
-    private InvoiceApplicationMapper invoiceApplicationMapper;
     @Mock
     private OwnerPostgresRepository ownerPostgresRepository;
-    private InvoiceInfrastructureMapper invoiceInfrastructureMapper;
+//    @Spy
+    private InvoiceMapper invoiceMapper;
 
     @BeforeEach
     public void setUp() {
-        invoiceInfrastructureMapper = new InvoiceInfrastructureMapper(
-                new LineItemInfrastructureMapper()
-        );
         sut = new CreateInvoiceApplicationService(
                 invoiceRepository,
-                invoiceApplicationMapper,
                 ownerPostgresRepository,
-                invoiceInfrastructureMapper
-        );
+                new InvoiceMapperImpl(Mappers.getMapper(LineItemMapper.class)));
     }
+
+
 
     @Test
     void createInvoice() {
@@ -135,7 +131,7 @@ class CreateInvoiceApplicationServiceTest {
         );
         Owner owner = new Owner(OWNER_USERNAME, "encryptedPassword");
 
-        when(invoiceRepository.save(Mockito.any())).thenAnswer(invocation -> invoiceInfrastructureMapper.toDomain(invocation.getArgument(0)));
+        when(invoiceRepository.save(Mockito.any())).thenAnswer(invocation ->invocation.getArgument(0));
         OwnerJpaEntity ownerJpaEntity = new OwnerJpaEntity().setUsername(OWNER_USERNAME);
         when(ownerPostgresRepository.findByUsername(owner.getUsername())).thenReturn(Optional.of(ownerJpaEntity));
 
@@ -155,25 +151,25 @@ class CreateInvoiceApplicationServiceTest {
         assertThat(actual.isPaid()).isFalse();
         assertThat(actual.getCurrency()).isEqualTo(EUR_CURRENCY);
 
-        Company actualSeller = actual.getSeller();
+        CompanyModel actualSeller = actual.getSeller();
         assertThat(actualSeller.email()).isEqualTo(SELLER_EMAIL);
         assertThat(actualSeller.name()).isEqualTo(SELLER_COMPANY_NAME);
         assertThat(actualSeller.phoneNumber()).isEqualTo(SELLER_PHONE_NUMBER);
         assertThat(actualSeller.address()).isNotNull();
 
-        Address actualSellerAddress = actualSeller.address();
+        AddressModel actualSellerAddress = actualSeller.address();
         assertThat(actualSellerAddress.city()).isEqualTo(SELLER_CITY);
         assertThat(actualSellerAddress.country()).isEqualTo(SELLER_COUNTRY);
         assertThat(actualSellerAddress.postalCode()).isEqualTo(SELLER_POSTAL_CODE);
         assertThat(actualSellerAddress.street()).isEqualTo(SELLER_STREET);
 
-        Company actualBuyer = actual.getBuyer();
+        CompanyModel actualBuyer = actual.getBuyer();
         assertThat(actualBuyer.email()).isEqualTo(BUYER_EMAIL);
         assertThat(actualBuyer.name()).isEqualTo(BUYER_COMPANY_NAME);
         assertThat(actualBuyer.phoneNumber()).isEqualTo(BUYER_PHONE_NUMBER);
         assertThat(actualBuyer.address()).isNotNull();
 
-        Address actualBuyerAddress = actualBuyer.address();
+        AddressModel actualBuyerAddress = actualBuyer.address();
         assertThat(actualBuyerAddress.city()).isEqualTo(BUYER_CITY);
         assertThat(actualBuyerAddress.country()).isEqualTo(BUYER_COUNTRY);
         assertThat(actualBuyerAddress.postalCode()).isEqualTo(BUYER_POSTAL_CODE);
