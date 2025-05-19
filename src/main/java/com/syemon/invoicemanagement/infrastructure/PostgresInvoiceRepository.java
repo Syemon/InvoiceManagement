@@ -11,7 +11,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @AllArgsConstructor
-public class PostgresInvoiceRepository {
+public class PostgresInvoiceRepository implements InvoiceRepository {
 
     public static final PageRequest FIND_INVOICES_TO_GENERATE_LIMIT = PageRequest.of(1, 5);
     private final InvoiceJpaRepository repository;

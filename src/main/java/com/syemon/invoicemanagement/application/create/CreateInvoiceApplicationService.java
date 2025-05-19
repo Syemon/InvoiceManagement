@@ -4,8 +4,10 @@ import com.syemon.invoicemanagement.application.mapper.InvoiceMapper;
 import com.syemon.invoicemanagement.domain.InvoiceStatus;
 import com.syemon.invoicemanagement.domain.Owner;
 import com.syemon.invoicemanagement.infrastructure.InvoiceJpaEntity;
+import com.syemon.invoicemanagement.infrastructure.InvoiceRepository;
 import com.syemon.invoicemanagement.infrastructure.OwnerJpaEntity;
 import com.syemon.invoicemanagement.infrastructure.OwnerPostgresRepository;
+import com.syemon.invoicemanagement.infrastructure.OwnerRepository;
 import com.syemon.invoicemanagement.infrastructure.PostgresInvoiceRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,8 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class CreateInvoiceApplicationService {
     public static final String SUCCESS_DESCRIPTION = "Invoice accepted. Will calculate items in up to 30 minutes";
 
-    private final PostgresInvoiceRepository invoiceRepository;
-    private final OwnerPostgresRepository ownerPostgresRepository;
+    private final InvoiceRepository invoiceRepository;
+    private final OwnerRepository ownerPostgresRepository;
     private final InvoiceMapper invoiceMapper;
 
     @Transactional

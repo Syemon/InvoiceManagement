@@ -5,9 +5,12 @@ import com.syemon.invoicemanagement.application.mapper.InvoiceMapper;
 import com.syemon.invoicemanagement.application.mapper.LineItemApplicationMapper;
 import com.syemon.invoicemanagement.infrastructure.InvoiceInfrastructureMapper;
 import com.syemon.invoicemanagement.infrastructure.InvoiceJpaRepository;
+import com.syemon.invoicemanagement.infrastructure.InvoiceRepository;
 import com.syemon.invoicemanagement.infrastructure.LineItemInfrastructureMapper;
 import com.syemon.invoicemanagement.infrastructure.LineItemJpaRepository;
+import com.syemon.invoicemanagement.infrastructure.LineItemRepository;
 import com.syemon.invoicemanagement.infrastructure.OwnerPostgresRepository;
+import com.syemon.invoicemanagement.infrastructure.OwnerRepository;
 import com.syemon.invoicemanagement.infrastructure.PostgresInvoiceRepository;
 import com.syemon.invoicemanagement.infrastructure.PostgresLineItemRepository;
 import org.springframework.context.annotation.Bean;
@@ -18,8 +21,8 @@ public class ApplicationConfiguration {
 
     @Bean
     public CreateInvoiceApplicationService createInvoiceApplicationService(
-            PostgresInvoiceRepository invoiceRepository,
-            OwnerPostgresRepository ownerPostgresRepository,
+            InvoiceRepository invoiceRepository,
+            OwnerRepository ownerPostgresRepository,
             InvoiceMapper invoiceMapper
     ) {
         return new CreateInvoiceApplicationService(
@@ -35,14 +38,14 @@ public class ApplicationConfiguration {
     }
 
     @Bean
-    public PostgresInvoiceRepository postgresInvoiceRepository(
+    public InvoiceRepository postgresInvoiceRepository(
             InvoiceJpaRepository invoiceJpaRepository,
             InvoiceInfrastructureMapper invoiceInfrastructureMapper) {
         return new PostgresInvoiceRepository(invoiceJpaRepository, invoiceInfrastructureMapper);
     }
 
     @Bean
-    public PostgresLineItemRepository postgresLineItemRepository(
+    public LineItemRepository postgresLineItemRepository(
             LineItemJpaRepository lineItemJpaRepository,
             LineItemInfrastructureMapper lineItemInfrastructureMapper
     ) {

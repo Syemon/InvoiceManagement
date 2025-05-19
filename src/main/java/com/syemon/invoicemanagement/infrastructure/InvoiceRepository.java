@@ -7,6 +7,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface InvoiceRepository {
-    Owner save(InvoiceJpaEntity invoice);
+    InvoiceJpaEntity save(InvoiceJpaEntity invoice);
     Optional<Invoice> findByUuid(UUID uuid);
 }
