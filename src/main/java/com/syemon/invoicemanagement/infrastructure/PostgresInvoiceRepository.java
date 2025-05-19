@@ -27,8 +27,8 @@ public class PostgresInvoiceRepository implements InvoiceRepository {
         return optionalEntity.map(invoiceInfrastructureMapper::toDomain);
     }
 
-    public List<InvoiceJpaEntity> findInvoicesToGenerate(List<InvoiceStatus> invoiceStatuses) {
-        return repository.findInvoiceJpaEntitiesByInvoiceStatusIn(invoiceStatuses, FIND_INVOICES_TO_GENERATE_LIMIT);
+    public List<InvoiceJpaEntity> findInvoicesByStatus(InvoiceStatus status, Integer limit) {
+        return repository.findInvoicesByStatus(status, limit);
     }
 
 }

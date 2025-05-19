@@ -10,6 +10,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
@@ -24,9 +26,22 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
+@NamedQueries({
+        @NamedQuery(
+                name = InvoiceJpaEntity.FIND_INVOICES_BY_STATUS,
+                query = """
+                SELECT i
+                FROM InvoiceJpaEntity i
+                WHERE i.invoiceStatus = :status
+                ORDER BY i.createTime ASC
+                LIMIT :limit
+""")
+})
 @Table(name = "invoice")
 @Data
 public class InvoiceJpaEntity {
+
+    public static final String FIND_INVOICES_BY_STATUS = "Invoice.findInvoicesByStatus";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
