@@ -1,10 +1,10 @@
 package com.syemon.invoicemanagement.application.mapper;
 
 import com.syemon.invoicemanagement.application.create.LineItemModel;
+import com.syemon.invoicemanagement.domain.LineItem;
 import com.syemon.invoicemanagement.infrastructure.LineItemJpaEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.springframework.stereotype.Service;
 
 @Mapper(componentModel = "spring")
 public interface LineItemMapper {
@@ -21,4 +21,13 @@ public interface LineItemMapper {
     @Mapping(target = "quantity", source = "quantity")
     @Mapping(target = "tax", source = "tax")
     LineItemJpaEntity toEntity(LineItemModel model);
+
+
+    @Mapping(target = "totalAmount", source = "totalAmount")
+    @Mapping(target = "totalTaxAmount", source = "totalTaxAmount")
+    @Mapping(target = "description", source = "description")
+    @Mapping(target = "amountPerItem", source = "amountPerItem")
+    @Mapping(target = "quantity", source = "quantity")
+    @Mapping(target = "tax", source = "tax")
+    LineItem toDomain(LineItemJpaEntity lineItemJpaEntity);
 }
