@@ -13,18 +13,15 @@ import java.util.UUID;
 @AllArgsConstructor
 public class PostgresInvoiceRepository implements InvoiceRepository {
 
-    public static final PageRequest FIND_INVOICES_TO_GENERATE_LIMIT = PageRequest.of(1, 5);
     private final InvoiceJpaRepository repository;
-    private final InvoiceInfrastructureMapper invoiceInfrastructureMapper;
 
     public InvoiceJpaEntity save(InvoiceJpaEntity invoiceJpaEntity) {
         return repository.save(invoiceJpaEntity);
     }
 
     @Transactional
-    public Optional<Invoice> findByUuid(UUID uuid) {
-        Optional<InvoiceJpaEntity> optionalEntity = repository.findByUuid(uuid);
-        return optionalEntity.map(invoiceInfrastructureMapper::toDomain);
+    public Optional<InvoiceJpaEntity> findByUuid(UUID uuid) {
+        return repository.findByUuid(uuid);
     }
 
     public List<InvoiceJpaEntity> findInvoicesByStatusIn(List<InvoiceStatus> status, Integer limit) {

@@ -2,19 +2,18 @@ package com.syemon.invoicemanagement.application;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.syemon.invoicemanagement.TestcontainersConfiguration;
+import com.syemon.invoicemanagement.application.mapper.InvoiceMapper;
 import com.syemon.invoicemanagement.application.security.UserApplicationService;
 import com.syemon.invoicemanagement.application.create.CreateInvoiceRequest;
 import com.syemon.invoicemanagement.application.create.CreateInvoiceResponse;
 import com.syemon.invoicemanagement.application.create.LineItemModel;
-import com.syemon.invoicemanagement.domain.Address;
-import com.syemon.invoicemanagement.domain.Company;
 import com.syemon.invoicemanagement.domain.DocumentType;
 import com.syemon.invoicemanagement.domain.Invoice;
 import com.syemon.invoicemanagement.domain.InvoiceStatus;
+import com.syemon.invoicemanagement.infrastructure.InvoiceJpaEntity;
 import com.syemon.invoicemanagement.infrastructure.InvoiceRepository;
 import com.syemon.invoicemanagement.domain.LineItem;
 import com.syemon.invoicemanagement.infrastructure.OwnerJpaEntity;
-import com.syemon.invoicemanagement.infrastructure.PostgresInvoiceRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -27,6 +26,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
@@ -36,7 +36,7 @@ import java.util.Currency;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -78,9 +78,14 @@ class InvoiceRestControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @Autowired
-    private PostgresInvoiceRepository invoiceRepository;
+    private InvoiceRepository invoiceRepository;
     @Autowired
     private UserApplicationService userApplicationService;
+    @Autowired
+    private InvoiceMapper invoiceMapper;
+    @Autowired
+    private TransactionTemplate transactionTemplate;
+
 
     @Test
     void create_shouldReturn400_whenNotValid() throws Exception {
@@ -396,10 +401,7 @@ class InvoiceRestControllerTest {
         assertThat(actualBuyerAddress.postalCode()).isEqualTo(BUYER_POSTAL_CODE);
         assertThat(actualBuyerAddress.street()).isEqualTo(BUYER_STREET);
 
-        Optional<Invoice> invoiceFromQuery = invoiceRepository.findByUuid(invoiceModel.getUuid());
-        assertThat(invoiceFromQuery).isPresent();
-        Invoice expectedInvoice = invoiceFromQuery.get();
-
+        Invoice expectedInvoice = getInvoiceJpaEntity(invoiceModel.getUuid());
         assertThat(invoiceModel.getUuid()).isEqualTo(expectedInvoice.getUuid());
         assertThat(invoiceModel.getInvoiceHeader()).isEqualTo(expectedInvoice.getInvoiceHeader());
         assertThat(invoiceModel.getInvoiceDate().truncatedTo(ChronoUnit.DAYS)).isEqualTo(expectedInvoice.getInvoiceDate().truncatedTo(ChronoUnit.DAYS));
@@ -439,4 +441,14 @@ class InvoiceRestControllerTest {
         assertThat(invoiceModel.isPaid()).isEqualTo(expectedInvoice.isPaid());
         assertThat(invoiceModel.getInvoiceStatus()).isEqualTo(expectedInvoice.getInvoiceStatus());
     }
+
+    public Invoice getInvoiceJpaEntity(UUID uuid) {
+        return transactionTemplate.execute(status -> {
+            InvoiceJpaEntity invoiceJpaEntity = invoiceRepository.findByUuid(uuid)
+                    .orElseThrow(() -> new IllegalArgumentException("Invoice not found"));
+
+            return invoiceMapper.toDomain(invoiceJpaEntity);
+        });
+    }
+
 }

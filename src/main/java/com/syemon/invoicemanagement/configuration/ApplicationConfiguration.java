@@ -2,14 +2,10 @@ package com.syemon.invoicemanagement.configuration;
 
 import com.syemon.invoicemanagement.application.create.CreateInvoiceApplicationService;
 import com.syemon.invoicemanagement.application.mapper.InvoiceMapper;
-import com.syemon.invoicemanagement.application.mapper.LineItemApplicationMapper;
-import com.syemon.invoicemanagement.infrastructure.InvoiceInfrastructureMapper;
 import com.syemon.invoicemanagement.infrastructure.InvoiceJpaRepository;
 import com.syemon.invoicemanagement.infrastructure.InvoiceRepository;
-import com.syemon.invoicemanagement.infrastructure.LineItemInfrastructureMapper;
 import com.syemon.invoicemanagement.infrastructure.LineItemJpaRepository;
 import com.syemon.invoicemanagement.infrastructure.LineItemRepository;
-import com.syemon.invoicemanagement.infrastructure.OwnerPostgresRepository;
 import com.syemon.invoicemanagement.infrastructure.OwnerRepository;
 import com.syemon.invoicemanagement.infrastructure.PostgresInvoiceRepository;
 import com.syemon.invoicemanagement.infrastructure.PostgresLineItemRepository;
@@ -32,36 +28,17 @@ public class ApplicationConfiguration {
         );
     }
 
-    @Bean
-    public LineItemApplicationMapper lineItemApplicationMapper() {
-        return new LineItemApplicationMapper();
-    }
 
     @Bean
-    public InvoiceRepository postgresInvoiceRepository(
-            InvoiceJpaRepository invoiceJpaRepository,
-            InvoiceInfrastructureMapper invoiceInfrastructureMapper) {
-        return new PostgresInvoiceRepository(invoiceJpaRepository, invoiceInfrastructureMapper);
+    public InvoiceRepository postgresInvoiceRepository(InvoiceJpaRepository invoiceJpaRepository) {
+        return new PostgresInvoiceRepository(invoiceJpaRepository);
     }
 
     @Bean
     public LineItemRepository postgresLineItemRepository(
-            LineItemJpaRepository lineItemJpaRepository,
-            LineItemInfrastructureMapper lineItemInfrastructureMapper
+            LineItemJpaRepository lineItemJpaRepository
     ) {
-        return new PostgresLineItemRepository(
-                lineItemJpaRepository,
-                lineItemInfrastructureMapper
-        );
+        return new PostgresLineItemRepository(lineItemJpaRepository);
     }
 
-    @Bean
-    public InvoiceInfrastructureMapper invoiceInfrastructureMapper(LineItemInfrastructureMapper lineItemInfrastructureMapper) {
-        return new InvoiceInfrastructureMapper(lineItemInfrastructureMapper);
-    }
-
-    @Bean
-    public LineItemInfrastructureMapper lineItemInfrastructureMapper() {
-        return new LineItemInfrastructureMapper();
-    }
 }

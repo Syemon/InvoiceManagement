@@ -9,16 +9,9 @@ import java.util.List;
 public class PostgresLineItemRepository implements LineItemRepository {
 
     private final LineItemJpaRepository repository;
-    private final LineItemInfrastructureMapper lineItemInfrastructureMapper;
 
     @Override
-    public List<LineItem> saveAll(List<LineItem> lineItems) {
-        List<LineItemJpaEntity> lineItemJpaEntities = lineItems.stream()
-                .map(lineItemInfrastructureMapper::toEntity)
-                .toList();
-        List<LineItemJpaEntity> persistedLineItems = repository.saveAll(lineItemJpaEntities);
-        return persistedLineItems.stream()
-                .map(lineItemInfrastructureMapper::toDomain)
-                .toList();
+    public List<LineItemJpaEntity> saveAll(List<LineItemJpaEntity> lineItems) {
+        return repository.saveAll(lineItems);
     }
 }
